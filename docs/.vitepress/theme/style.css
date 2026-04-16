@@ -16,6 +16,9 @@
   /* 中文排版优化 */
   --vp-font-family-base: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
   --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
+
+  /* 导航栏尺寸增大，提升顶部菜单可读性与点击体验 */
+  --vp-nav-height: 64px;
 }
 
 .dark {
@@ -66,7 +69,7 @@
 /* Ensure VPContent has padding-top matching nav height on ALL viewports
    (VitePress only adds it on >=960px by default). */
 .VPContent {
-  padding-top: var(--vp-nav-height, 56px) !important;
+  padding-top: var(--vp-nav-height) !important;
 }
 
 /* ── 内容页独立滚动 ── */
@@ -76,7 +79,7 @@
 @media (min-width: 960px) {
   /* Lock VPContent to viewport height so body scroll is eliminated */
   .Layout .VPContent.has-sidebar {
-    height: calc(100vh - var(--vp-nav-height, 56px));
+    height: calc(100vh - var(--vp-nav-height));
     overflow: hidden;
     padding-top: 0 !important;
     margin: 0 !important;
@@ -85,8 +88,8 @@
   /* Sidebar is already position:fixed with overflow-y:auto on desktop.
      Just pin its top to the nav bar bottom and limit height to viewport. */
   .Layout .VPSidebar {
-    top: var(--vp-nav-height, 56px) !important;
-    height: calc(100vh - var(--vp-nav-height, 56px)) !important;
+    top: var(--vp-nav-height) !important;
+    height: calc(100vh - var(--vp-nav-height)) !important;
   }
 
   /* Make VPDoc fill the available space and use flex layout */
@@ -309,6 +312,8 @@
 
 /* 导航项 hover 背景淡入 */
 .VPNav .VPNavBarMenu .VPNavBarMenuLink {
+  font-size: 16px;
+  padding: 0 16px;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
