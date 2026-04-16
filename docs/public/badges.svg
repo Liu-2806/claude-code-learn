@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 90" width="720" height="90">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0a0e27"/>
+      <stop offset="100%" style="stop-color:#0d1127"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- 透明背景 -->
+  <rect width="720" height="90" fill="url(#bgGrad)" rx="8"/>
+
+  <!-- 意图驱动 -->
+  <rect x="15" y="12" width="210" height="66" rx="33" fill="#7c3aed" opacity="0.12" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="50" y="52" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#a78bfa" font-weight="700">🧠 意图驱动</text>
+
+  <!-- 迭代验证 -->
+  <rect x="255" y="12" width="210" height="66" rx="33" fill="#f97316" opacity="0.12" stroke="#f97316" stroke-width="1.5"/>
+  <text x="290" y="52" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#fb923c" font-weight="700">🔄 迭代验证</text>
+
+  <!-- 人做守门员 -->
+  <rect x="495" y="12" width="210" height="66" rx="33" fill="#3b82f6" opacity="0.12" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="530" y="52" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#60a5fa" font-weight="700">🛡️ 人做守门员</text>
+</svg>

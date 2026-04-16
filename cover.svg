@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1440" width="1080" height="1440">
+  <defs>
+    <!-- 背景渐变 -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e27;stop-opacity:1"/>
+      <stop offset="50%" style="stop-color:#1a1a3e;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0d1127;stop-opacity:1"/>
+    </linearGradient>
+    <!-- 紫色光晕 -->
+    <radialGradient id="purpleGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0"/>
+    </radialGradient>
+    <!-- 蓝色光晕 -->
+    <radialGradient id="blueGlow" cx="70%" cy="60%" r="50%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0"/>
+    </radialGradient>
+    <!-- 橙色accent渐变 -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#e8713a;stop-opacity:1"/>
+    </linearGradient>
+    <!-- 代码块渐变 -->
+    <linearGradient id="codeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:0.9"/>
+    </linearGradient>
+    <!-- 文字渐变 -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f97316"/>
+      <stop offset="100%" style="stop-color:#fb923c"/>
+    </linearGradient>
+    <linearGradient id="vibeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <!-- 发光效果 -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="strongGlow">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1080" height="1440" fill="url(#bgGrad)"/>
+  <rect width="1080" height="1440" fill="url(#purpleGlow)"/>
+  <rect width="1080" height="1440" fill="url(#blueGlow)"/>
+
+  <!-- 背景网格线 (微弱) -->
+  <g opacity="0.04" stroke="#7c3aed" stroke-width="1">
+    <line x1="0" y1="0" x2="1080" y2="1440"/>
+    <line x1="1080" y1="0" x2="0" y2="1440"/>
+    <line x1="540" y1="0" x2="540" y2="1440"/>
+    <line x1="0" y1="720" x2="1080" y2="720"/>
+    <!-- 更多网格 -->
+    <line x1="180" y1="0" x2="180" y2="1440"/>
+    <line x1="360" y1="0" x2="360" y2="1440"/>
+    <line x1="720" y1="0" x2="720" y2="1440"/>
+    <line x1="900" y1="0" x2="900" y2="1440"/>
+    <line x1="0" y1="180" x2="1080" y2="180"/>
+    <line x1="0" y1="360" x2="1080" y2="360"/>
+    <line x1="0" y1="1080" x2="1080" y2="1080"/>
+    <line x1="0" y1="1260" x2="1080" y2="1260"/>
+  </g>
+
+  <!-- 背景漂浮粒子 -->
+  <g opacity="0.3" fill="#7c3aed">
+    <circle cx="120" cy="200" r="2" filter="url(#glow)"/>
+    <circle cx="950" cy="150" r="1.5"/>
+    <circle cx="800" cy="400" r="2" filter="url(#glow)"/>
+    <circle cx="200" cy="500" r="1.5"/>
+    <circle cx="980" cy="700" r="2"/>
+    <circle cx="100" cy="900" r="1.5" filter="url(#glow)"/>
+    <circle cx="750" cy="1100" r="2"/>
+    <circle cx="300" cy="1300" r="1.5" filter="url(#glow)"/>
+  </g>
+  <g opacity="0.2" fill="#3b82f6">
+    <circle cx="400" cy="100" r="1.5" filter="url(#glow)"/>
+    <circle cx="700" cy="300" r="2"/>
+    <circle cx="150" cy="700" r="1.5"/>
+    <circle cx="880" cy="900" r="2" filter="url(#glow)"/>
+    <circle cx="500" cy="1200" r="1.5"/>
+  </g>
+  <g opacity="0.15" fill="#f97316">
+    <circle cx="600" cy="250" r="1.5"/>
+    <circle cx="350" cy="800" r="2" filter="url(#glow)"/>
+    <circle cx="900" cy="1300" r="1.5"/>
+  </g>
+
+  <!-- ===== 顶部区域 ===== -->
+
+  <!-- Claude Code logo 区域 - 用终端风格 -->
+  <g transform="translate(540, 180)">
+    <!-- 终端窗口外框 -->
+    <rect x="-260" y="-40" width="520" height="50" rx="10" fill="url(#codeGrad)" stroke="#334155" stroke-width="1.5"/>
+    <!-- 终端三个圆点 -->
+    <circle cx="-235" cy="-15" r="8" fill="#ef4444" opacity="0.8"/>
+    <circle cx="-210" cy="-15" r="8" fill="#eab308" opacity="0.8"/>
+    <circle cx="-185" cy="-15" r="8" fill="#22c55e" opacity="0.8"/>
+    <!-- 终端文字 -->
+    <text x="-140" y="-8" font-family="Consolas, monospace" font-size="18" fill="#94a3b8">~/your-project $</text>
+    <text x="30" y="-8" font-family="Consolas, monospace" font-size="18" fill="#f97316" filter="url(#glow)">claude</text>
+  </g>
+
+  <!-- ===== 核心标语区域 ===== -->
+
+  <!-- 主标题: Code is cheap -->
+  <text x="540" y="340" font-family="'Georgia', 'Times New Roman', serif" font-size="72" fill="url(#textGrad)" text-anchor="middle" filter="url(#softGlow)" font-weight="bold" letter-spacing="4">Code is cheap</text>
+
+  <!-- 副标题: show me your prompt -->
+  <text x="540" y="430" font-family="'Georgia', 'Times New Roman', serif" font-size="52" fill="#e2e8f0" text-anchor="middle" filter="url(#softGlow)" letter-spacing="2" font-style="italic">show me your prompt</text>
+
+  <!-- 分隔线 -->
+  <line x1="340" y1="480" x2="740" y2="480" stroke="url(#accentGrad)" stroke-width="2" opacity="0.6"/>
+  <!-- 两端圆点 -->
+  <circle cx="340" cy="480" r="3" fill="#f97316" opacity="0.8"/>
+  <circle cx="740" cy="480" r="3" fill="#f97316" opacity="0.8"/>
+
+  <!-- ===== Vibe Coding 区域 ===== -->
+
+  <!-- VIBE CODING 大字 -->
+  <text x="540" y="570" font-family="'Helvetica Neue', 'Arial Black', sans-serif" font-size="110" fill="url(#vibeGrad)" text-anchor="middle" filter="url(#strongGlow)" font-weight="900" letter-spacing="12">VIBE</text>
+  <text x="540" y="680" font-family="'Helvetica Neue', 'Arial Black', sans-serif" font-size="110" fill="url(#vibeGrad)" text-anchor="middle" filter="url(#strongGlow)" font-weight="900" letter-spacing="12">CODING</text>
+
+  <!-- 方法论标签 -->
+  <g transform="translate(540, 760)">
+    <!-- 横向三个标签 -->
+    <rect x="-320" y="-25" width="180" height="50" rx="25" fill="#7c3aed" opacity="0.2" stroke="#7c3aed" stroke-width="1"/>
+    <text x="-230" y="8" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" fill="#a78bfa" text-anchor="middle" font-weight="600">意图驱动</text>
+
+    <rect x="-110" y="-25" width="220" height="50" rx="25" fill="#f97316" opacity="0.2" stroke="#f97316" stroke-width="1"/>
+    <text x="0" y="8" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" fill="#fb923c" text-anchor="middle" font-weight="600">迭代验证</text>
+
+    <rect x="140" y="-25" width="180" height="50" rx="25" fill="#3b82f6" opacity="0.2" stroke="#3b82f6" stroke-width="1"/>
+    <text x="230" y="8" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" fill="#60a5fa" text-anchor="middle" font-weight="600">人做守门员</text>
+  </g>
+
+  <!-- ===== 代码展示区域 ===== -->
+
+  <!-- 代码块背景 -->
+  <rect x="160" y="840" width="760" height="220" rx="16" fill="url(#codeGrad)" stroke="#334155" stroke-width="1.5"/>
+  <!-- 代码块顶部装饰条 -->
+  <rect x="160" y="840" width="760" height="40" rx="16" fill="#1e293b"/>
+  <rect x="160" y="860" width="760" height="20" fill="#1e293b"/>
+  <!-- 代码块三个圆点 -->
+  <circle cx="190" cy="862" r="7" fill="#ef4444" opacity="0.8"/>
+  <circle cx="215" cy="862" r="7" fill="#eab308" opacity="0.8"/>
+  <circle cx="240" cy="862" r="7" fill="#22c55e" opacity="0.8"/>
+  <!-- 文件名 -->
+  <text x="280" y="867" font-family="Consolas, monospace" font-size="14" fill="#94a3b8">prompt.md</text>
+
+  <!-- 代码内容 -->
+  <text x="190" y="910" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#7c3aed">// 不只是工具，是思维方式</text>
+  <text x="190" y="940" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#f97316">理解需求</text>
+  <text x="310" y="940" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#94a3b8"> → </text>
+  <text x="360" y="940" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#3b82f6">制定计划</text>
+  <text x="480" y="940" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#94a3b8"> → </text>
+  <text x="530" y="940" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#22c55e">执行操作</text>
+  <text x="190" y="970" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#94a3b8">       → </text>
+  <text x="310" y="970" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#eab308">观察结果</text>
+  <text x="440" y="970" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#94a3b8"> → </text>
+  <text x="490" y="970" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#ef4444">修正迭代</text>
+  <text x="190" y="1000" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#94a3b8">       → </text>
+  <text x="310" y="1000" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#f97316" filter="url(#glow)">直到完成 ✅</text>
+
+  <!-- 光标闪烁效果 -->
+  <rect x="430" y="1010" width="12" height="18" fill="#f97316" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- ===== 项目信息区域 ===== -->
+
+  <!-- 项目名称 -->
+  <text x="540" y="1150" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" fill="#e2e8f0" text-anchor="middle" font-weight="700" letter-spacing="3">Claude Code 中文教程</text>
+
+  <!-- 副描述 -->
+  <text x="540" y="1190" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#94a3b8" text-anchor="middle" letter-spacing="1">从入门到精通 · Vibe Coding 方法论 · Prompt 配方库</text>
+
+  <!-- GitHub 标识 -->
+  <g transform="translate(540, 1240)">
+    <!-- GitHub 圆角矩形 -->
+    <rect x="-160" y="-20" width="320" height="40" rx="20" fill="#181717" stroke="#334155" stroke-width="1"/>
+    <!-- GitHub icon (简化) -->
+    <circle cx="-110" cy="0" r="14" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+    <path d="M-110,-8 L-110,8 M-118,0 L-102,0" stroke="#e2e8f0" stroke-width="2" opacity="0.5"/>
+    <!-- 文字 -->
+    <text x="-70" y="6" font-family="'Helvetica Neue', sans-serif" font-size="18" fill="#e2e8f0" letter-spacing="1">Liu-2806/claude-code-learn</text>
+  </g>
+
+  <!-- ===== 底部装饰 ===== -->
+
+  <!-- 底部渐变条 -->
+  <rect x="0" y="1380" width="1080" height="60" fill="url(#accentGrad)" opacity="0.15"/>
+
+  <!-- 底部标语 -->
+  <text x="540" y="1415" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#64748b" text-anchor="middle" letter-spacing="6">开源免费 · 持续更新 · 社区驱动</text>
+
+  <!-- 角落装饰 - 左上 -->
+  <path d="M0,0 L40,0 L0,40" fill="#f97316" opacity="0.3"/>
+  <!-- 角落装饰 - 右下 -->
+  <path d="M1080,1440 L1040,1440 L1080,1400" fill="#7c3aed" opacity="0.3"/>
+
+</svg>
