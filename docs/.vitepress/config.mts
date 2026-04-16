@@ -196,7 +196,7 @@ export default defineConfig({
 
     footer: {
       message: '基于 MIT 协议发布',
-      copyright: '© 2024-present Claude Code 中文教程贡献者',
+      copyright: '© 2025-present Claude Code 中文教程贡献者',
     },
 
     editLink: {

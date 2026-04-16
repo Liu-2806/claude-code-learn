@@ -128,9 +128,3 @@ echo ".claude/settings.local.json" >> .gitignore
 
 详见[安全与合规](/guide/security)章节。
 :::
-
-## 自定义斜杠命令（Custom Commands）
-
-除了内置的 `/help`、`/compact` 等，你可以创建项目专属的自定义命令——手动触发的 prompt 模板。
-
-详见[自定义斜杠命令](/guide/custom-commands)。

@@ -77,5 +77,5 @@ Cursor/Copilot 是**"AI 伴飞"**模式——你写代码，AI 辅助补全。Cl
 | 快速问答、查文档 | 任何一个（都能做） |
 
 ::: warning 注意
-同时使用多个 AI 工具时要注意成本叠加。Claude Code 按 API token 计费，Cursor/Copilot 按订阅计费。如果你的大部分任务 Claude Code 就能完成，可以考虑只用 Claude Code + VS Code 扩展（不额外付费）。
+同时使用多个 AI 工具时要注意成本叠加。Claude Code 按 API token 计费，Cursor/Copilot 按订阅计费。根据你的实际使用频率评估哪种方式更划算。
 :::

@@ -9,7 +9,7 @@ Claude Code 支持三种 Claude 模型，不同场景适合不同选择：
 | **Haiku 4.5** | 快速低成本 | 快速补全、格式化、简单问答 | `claude --model haiku` |
 
 ::: info 模型版本说明
-Claude 模型持续更新。以上版本号为当前最新（Opus 4.6 / Sonnet 4.6 / Haiku 4.5）。使用 `claude --model opus` 时会自动使用对应系列的最新版本，无需指定完整版本号。
+以下为 2026 年 4 月的模型版本信息。Claude 模型持续更新，版本号和定价可能变化。使用 `claude --model opus` 时会自动使用对应系列的最新版本，无需指定完整版本号。请以[官方定价页](https://docs.anthropic.com/en/docs/about-claude/pricing)为准。
 :::
 
 ## 定价参考

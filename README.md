@@ -8,7 +8,6 @@
 
 **Anthropic 官方 CLI 工具的完整中文使用指南 + Vibe Coding 方法论 — 从入门到精通**
 
-> 本教程基于 Claude Code v2.x 编写，持续更新跟进官方版本
 
 </div>
 

@@ -51,6 +51,6 @@
 | 推荐措施 | 说明 |
 |----------|------|
 | 企业级 deny 规则 | 在 `/etc/claude-code/settings.json` 强制禁止危险命令 |
-| OAuth 认证 | 遣弃 API Key 方式，使用组织账户 OAuth 登录 |
+| OAuth 认证 | 弃用 API Key 方式，使用组织账户 OAuth 登录 |
 | 代码审查 | 即使 Claude 自动编辑，仍需人工审查变更后再合并 |
 | 敏感文件排除 | 在 `.claudeignore` 中排除含敏感数据的文件和目录 |
