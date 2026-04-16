@@ -54,7 +54,7 @@ export default {
       document.addEventListener('click', (e: MouseEvent) => {
         const target = e.target as HTMLElement
         // VitePress outline links are <a> elements inside .VPDocOutline
-        const outlineLink = target.closest('.VPDocOutline a')
+        const outlineLink = target.closest('a.outline-link')
         if (!outlineLink) return
 
         const href = outlineLink.getAttribute('href')
