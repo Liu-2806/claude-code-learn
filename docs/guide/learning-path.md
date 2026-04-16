@@ -47,6 +47,20 @@
 | **成本控制** | [模型选择与定价](/guide/model-selection) |
 | **自定义命令** | [自定义斜杠命令](/guide/custom-commands) |
 
+## Vibe Coding 方法论路径
+
+**如果你不仅想学会工具，还想掌握方法论——** 以下路径帮你体系化提升 AI 辅助开发能力：
+
+| 阶段 | 内容 | 预计时间 |
+|------|------|---------|
+| **认知篇** | [什么是 Vibe Coding](/vibe/what-is-vibe-coding) + [思维转变](/vibe/mindset-shift) + [核心原则](/vibe/core-principles) | 30 分钟 |
+| **避坑篇** | [7 大反模式与对策](/vibe/anti-patterns) | 20 分钟 |
+| **实操篇** | [项目搭建 SOP](/vibe/sop-scaffold) + [调试排障 SOP](/vibe/sop-debug) + [重构迁移 SOP](/vibe/sop-refactor) + [审查发布 SOP](/vibe/sop-review) | 40 分钟 |
+| **工具箱** | [Prompt 配方库](/vibe/prompt-recipes) + [决策日志](/vibe/decision-log) | 按需查阅 |
+| **进阶篇** | [多 Agent 协作 / TDD 融合 / 大仓库策略](/vibe/advanced-techniques) | 20 分钟 |
+
+**建议顺序：** 先学工具使用（指南板块），再学方法论（Vibe Coding 板块）。两者互补——工具是引擎，方法论是方向盘。
+
 ## 实战案例
 
 理论学完后，通过案例加深理解：

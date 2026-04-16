@@ -13,6 +13,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: '指南', link: '/guide/quickstart', activeMatch: '/guide/' },
+      { text: 'Vibe Coding', link: '/vibe/what-is-vibe-coding', activeMatch: '/vibe/' },
       { text: '进阶', link: '/advanced/agentic-coding', activeMatch: '/advanced/' },
       { text: '案例', link: '/examples/scaffold-project', activeMatch: '/examples/' },
       { text: '常见问题', link: '/faq' },
@@ -27,6 +28,49 @@ export default defineConfig({
     ],
 
     sidebar: {
+      '/vibe/': [
+        {
+          text: '入门',
+          collapsed: false,
+          items: [
+            { text: '什么是 Vibe Coding', link: '/vibe/what-is-vibe-coding' },
+            { text: '思维转变', link: '/vibe/mindset-shift' },
+            { text: '核心原则', link: '/vibe/core-principles' },
+          ]
+        },
+        {
+          text: '反模式与陷阱',
+          collapsed: false,
+          items: [
+            { text: '7 大反模式与对策', link: '/vibe/anti-patterns' },
+          ]
+        },
+        {
+          text: 'SOP 标准操作流程',
+          collapsed: false,
+          items: [
+            { text: '项目搭建 SOP', link: '/vibe/sop-scaffold' },
+            { text: '调试排障 SOP', link: '/vibe/sop-debug' },
+            { text: '重构迁移 SOP', link: '/vibe/sop-refactor' },
+            { text: '审查发布 SOP', link: '/vibe/sop-review' },
+          ]
+        },
+        {
+          text: '实操工具箱',
+          collapsed: false,
+          items: [
+            { text: 'Prompt 配方库', link: '/vibe/prompt-recipes' },
+            { text: '决策日志', link: '/vibe/decision-log' },
+          ]
+        },
+        {
+          text: '高级技巧',
+          collapsed: false,
+          items: [
+            { text: '多 Agent 协作 / TDD 融合 / 大仓库策略', link: '/vibe/advanced-techniques' },
+          ]
+        },
+      ],
       '/guide/': [
         {
           text: '开始',

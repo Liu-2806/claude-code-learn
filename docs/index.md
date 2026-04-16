@@ -23,15 +23,15 @@ features:
   - icon: 📝
     title: CLAUDE.md 持久记忆
     details: 三级放置（全局 / 项目 / 目录），让 Claude 跨会话保持项目上下文
-  - icon: 🌳
-    title: Git Worktree 并行开发
-    details: 多个 Claude 实例同时在不同分支上工作，物理隔离无需 stash
+  - icon: 🧠
+    title: Vibe Coding 方法论
+    details: 意图优于语法、迭代验证、人做守门员 — 体系化的 AI 辅助开发方法论
   - icon: 📋
-    title: spec→plan→tasks 工作流
-    details: 文档驱动而非凭记忆，减少幻觉，跨会话延续，可追溯
-  - icon: 🔗
-    title: MCP 服务器集成
-    details: 连接外部工具和数据源，数据库、Slack、GitHub API 等
+    title: 可复用 SOP
+    details: 项目搭建、调试排障、重构迁移、审查发布 — 四大场景标准化操作流程
+  - icon: 🧪
+    title: Prompt 配方库
+    details: 20+ 即用 prompt 模板，覆盖搭建/调试/重构/审查/文档/测试/安全
 ---
 
 <style>
