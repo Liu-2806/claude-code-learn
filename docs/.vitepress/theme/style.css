@@ -340,31 +340,50 @@ html, body {
 
 /* Navbar sizing */
 :root {
-  --vp-nav-height: 64px;
+  --vp-nav-height: 72px;
 }
 
 @media (max-width: 959px) {
   :root {
-    --vp-nav-height: 56px;
+    --vp-nav-height: 60px;
   }
 }
 
+.VPNav,
+.VPNav .VPNavBar,
+.VPNav .VPNavBar .container {
+  height: var(--vp-nav-height);
+}
+
+.VPNav .VPNavBar .container,
+.VPNav .VPNavBarTitle,
+.VPNav .VPNavBarMenu,
+.VPNav .VPNavBarExtra,
+.VPNav .VPNavBarAppearance,
+.VPNav .VPSocialLinks {
+  display: flex;
+  align-items: center;
+}
+
 .VPNav .VPNavBarTitle .title {
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 700;
-  line-height: var(--vp-nav-height);
+  line-height: 1.3;
 }
 
 .VPNav .VPNavBarMenu .VPNavBarMenuLink {
-  font-size: 15px;
-  font-weight: 500;
-  padding: 0 14px;
-  line-height: var(--vp-nav-height);
+  display: inline-flex;
+  align-items: center;
+  height: var(--vp-nav-height);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 0 18px;
+  line-height: 1.3;
 }
 
 @media (max-width: 959px) {
   .VPNav .VPNavBarTitle .title {
-    font-size: 16px;
+    font-size: 17px;
   }
 }
 
