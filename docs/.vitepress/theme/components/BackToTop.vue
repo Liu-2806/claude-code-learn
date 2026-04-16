@@ -105,15 +105,6 @@ onMounted(() => {
   transform: scale(0.95);
 }
 
-:global(.dark) .back-to-top-btn {
-  background: linear-gradient(135deg, #F09060, #E8713A);
-  box-shadow: 0 4px 16px rgba(240, 144, 96, 0.35);
-}
-
-:global(.dark) .back-to-top-btn:hover {
-  box-shadow: 0 6px 24px rgba(240, 144, 96, 0.5);
-}
-
 .back-to-top-enter-active,
 .back-to-top-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;

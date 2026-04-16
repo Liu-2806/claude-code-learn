@@ -106,15 +106,6 @@ const particles = computed(() => {
   }
 }
 
-:global(.dark) .feature-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow:
-    0 16px 40px rgba(240, 144, 96, 0.22),
-    0 4px 12px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(240, 144, 96, 0.3);
-  border-color: #F09060;
-}
-
 /* Top-edge glow line */
 .card-glow-edge {
   position: absolute;
@@ -129,10 +120,6 @@ const particles = computed(() => {
 
 .feature-card:hover .card-glow-edge {
   opacity: 0.7;
-}
-
-:global(.dark) .feature-card:hover .card-glow-edge {
-  opacity: 0.8;
 }
 
 /* Shimmer sweep */
@@ -152,17 +139,6 @@ const particles = computed(() => {
   );
   animation: shimmer-sweep 0.9s ease-out forwards;
   pointer-events: none;
-}
-
-:global(.dark) .shimmer-overlay {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(240, 144, 96, 0.06) 40%,
-    rgba(240, 144, 96, 0.15) 50%,
-    rgba(240, 144, 96, 0.06) 60%,
-    transparent 100%
-  );
 }
 
 @keyframes shimmer-sweep {
@@ -212,15 +188,6 @@ const particles = computed(() => {
 .feature-card:hover .feature-icon {
   background: linear-gradient(135deg, rgba(232, 113, 58, 0.25), rgba(240, 144, 96, 0.12));
   box-shadow: 0 4px 12px rgba(232, 113, 58, 0.2);
-}
-
-:global(.dark) .feature-icon {
-  background: linear-gradient(135deg, rgba(240, 144, 96, 0.2), rgba(232, 113, 58, 0.1));
-}
-
-:global(.dark) .feature-card:hover .feature-icon {
-  background: linear-gradient(135deg, rgba(240, 144, 96, 0.3), rgba(232, 113, 58, 0.15));
-  box-shadow: 0 4px 12px rgba(240, 144, 96, 0.2);
 }
 
 @keyframes icon-breathe {

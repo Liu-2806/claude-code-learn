@@ -32,17 +32,6 @@ html, body {
   --vp-nav-height: 72px;
 }
 
-.dark {
-  --vp-c-brand-1: #F09060;
-  --vp-c-brand-2: #E8713A;
-  --vp-c-brand-3: #D4622E;
-  --vp-c-brand-light: #F8B088;
-  --vp-c-brand-lighter: #FCC8A8;
-  --vp-c-brand-dark: #E8713A;
-  --vp-c-brand-darker: #C05222;
-  --brand-gradient: linear-gradient(135deg, #F09060 0%, #E8713A 50%, #D4622E 100%);
-}
-
 /* ── 移动端导航栏自适应 ── */
 @media (max-width: 959px) {
   :root {
@@ -183,18 +172,6 @@ html, body {
   z-index: -1;
 }
 
-.dark .VPHero::before {
-  background: radial-gradient(circle, rgba(240, 144, 96, 0.18) 0%, transparent 70%);
-}
-
-.dark .VPHero::after {
-  background: radial-gradient(circle, rgba(232, 113, 58, 0.12) 0%, transparent 70%);
-}
-
-.dark .VPHero .main::after {
-  background: radial-gradient(circle, rgba(240, 144, 96, 0.14) 0%, transparent 70%);
-}
-
 @keyframes float-blob-1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(30px, 20px) scale(1.1); }
@@ -268,10 +245,6 @@ html, body {
   50% { opacity: 0.6; transform: scale(1.08); }
 }
 
-.dark .VPHero .VPButton.brand::after {
-  background: linear-gradient(135deg, #F09060, #E8713A);
-}
-
 /* 首页 tagline 名字品牌色 + 微光动画 */
 .name {
   color: var(--vp-c-brand-1) !important;
@@ -293,10 +266,6 @@ html, body {
 /* ── 导航栏增强 ── */
 .VPNav {
   border-bottom: 1px solid rgba(232, 113, 58, 0.15);
-}
-
-.dark .VPNav {
-  border-bottom-color: rgba(240, 144, 96, 0.12);
 }
 
 /* 活跃导航项底部指示条 */
@@ -330,11 +299,6 @@ html, body {
 
 .VPNav .VPNavBarMenu .VPNavBarMenuLink:hover {
   background-color: rgba(232, 113, 58, 0.06);
-  color: var(--vp-c-brand-1);
-}
-
-.dark .VPNav .VPNavBarMenu .VPNavBarMenuLink:hover {
-  background-color: rgba(240, 144, 96, 0.08);
   color: var(--vp-c-brand-1);
 }
 
@@ -502,11 +466,6 @@ html, body {
   color: var(--vp-c-brand-1);
 }
 
-.dark .VPSidebarItem.is-link > .item > .link:hover {
-  background-color: rgba(240, 144, 96, 0.08);
-  color: var(--vp-c-brand-1);
-}
-
 /* ── 内容区域排版 ── */
 /* 中文行高与间距优化 */
 .vp-doc p {
@@ -582,20 +541,12 @@ html, body {
   color: white;
 }
 
-.dark .vp-doc th {
-  background: var(--vp-c-brand-2);
-}
-
 .vp-doc tr {
   transition: background-color 0.2s ease;
 }
 
 .vp-doc tbody tr:hover {
   background-color: rgba(232, 113, 58, 0.06);
-}
-
-.dark .vp-doc tbody tr:hover {
-  background-color: rgba(240, 144, 96, 0.08);
 }
 
 /* 自定义容器样式 - 左侧渐变装饰线 */
@@ -658,11 +609,6 @@ html, body {
   color: var(--vp-c-brand-1);
 }
 
-.dark .vp-doc :not(pre) > code:hover {
-  background-color: rgba(240, 144, 96, 0.2);
-  color: var(--vp-c-brand-1);
-}
-
 /* ── 代码块样式增强 ── */
 .vp-doc div[class*='language-'] {
   border-radius: 8px;
@@ -689,11 +635,6 @@ html, body {
   line-height: 1.4;
 }
 
-.dark .vp-doc div[class*='language-'] > span.lang {
-  background: var(--vp-c-brand-2);
-  opacity: 0.9;
-}
-
 /* 复制按钮 hover 放大 + 微旋转 */
 .vp-doc div[class*='language-'] button.copy {
   transition: transform 0.2s ease, opacity 0.2s ease;
@@ -717,11 +658,6 @@ html, body {
   transform: translateY(-5px);
   box-shadow: 0 12px 28px rgba(232, 113, 58, 0.12);
   border-color: rgba(232, 113, 58, 0.3);
-}
-
-.dark .VPFeature .item:hover {
-  box-shadow: 0 12px 28px rgba(240, 144, 96, 0.15);
-  border-color: rgba(240, 144, 96, 0.25);
 }
 
 /* ── 编辑链接与最后更新 ── */
@@ -849,10 +785,6 @@ html, body {
   z-index: 1;
 }
 
-:global(.dark) .home-cta-btn:hover {
-  box-shadow: 0 8px 24px rgba(240, 144, 96, 0.35);
-}
-
 /* ── 链接样式增强 ── */
 .vp-doc a {
   transition: color 0.2s ease, border-bottom-color 0.2s ease;
@@ -873,14 +805,6 @@ html, body {
   background: rgba(232, 113, 58, 0.5);
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(240, 144, 96, 0.35);
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(240, 144, 96, 0.55);
-}
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
@@ -891,15 +815,7 @@ html, body {
   color: var(--vp-c-text-1);
 }
 
-.dark ::selection {
-  background: rgba(240, 144, 96, 0.25);
-}
-
 /* ── footer 增强 ── */
 .VPFooter {
   border-top: 1px solid rgba(232, 113, 58, 0.1);
-}
-
-.dark .VPFooter {
-  border-top-color: rgba(240, 144, 96, 0.08);
 }

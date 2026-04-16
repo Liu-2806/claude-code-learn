@@ -102,9 +102,4 @@ onUnmounted(() => {
     top: 60px; /* 手机端导航栏高度 */
   }
 }
-
-:global(.dark) .reading-progress {
-  background: linear-gradient(90deg, #F09060, #E8713A, #D4622E);
-  box-shadow: 0 0 8px rgba(240, 144, 96, 0.4);
-}
 </style>
