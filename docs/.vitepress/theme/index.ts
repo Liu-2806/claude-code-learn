@@ -15,10 +15,73 @@ export default {
 
     // Dispatch a custom event when VitePress route changes,
     // so overlay components (mounted in a separate app) can react.
+    // Also fix: hash-based scroll on route change doesn't work with
+    // independent .content scroll, so we manually scroll after route change.
     if (router && typeof window !== 'undefined') {
       router.onAfterRouteChanged = (to) => {
         window.dispatchEvent(new CustomEvent('vitepress-route-changed', { detail: to }))
+
+        // Fix: scroll to hash anchor within .content container after route change
+        if (to.includes('#')) {
+          const id = to.split('#')[1]
+          // Wait for content to render
+          setTimeout(() => {
+            const heading = document.getElementById(decodeURIComponent(id))
+            if (!heading) return
+
+            const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
+            const scrollTarget = (contentEl && window.innerWidth >= 960) ? contentEl : window
+
+            if (scrollTarget instanceof Element) {
+              const containerRect = scrollTarget.getBoundingClientRect()
+              const headingRect = heading.getBoundingClientRect()
+              const currentScroll = scrollTarget.scrollTop
+              const offset = headingRect.top - containerRect.top + currentScroll - 32
+              scrollTarget.scrollTo({ top: offset, behavior: 'smooth' })
+            } else {
+              heading.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+          }, 100)
+        }
       }
+    }
+
+    // Fix: outline (right-side TOC) clicks don't scroll the content area
+    // because the content div uses overflow-y:auto (independent scroll).
+    // Native anchor navigation scrolls the document, not nested scrollable containers.
+    // Intercept outline link clicks and manually scroll within the .content container.
+    if (typeof window !== 'undefined') {
+      document.addEventListener('click', (e: MouseEvent) => {
+        const target = e.target as HTMLElement
+        // VitePress outline links are <a> elements inside .VPDocOutline
+        const outlineLink = target.closest('.VPDocOutline a')
+        if (!outlineLink) return
+
+        const href = outlineLink.getAttribute('href')
+        if (!href || !href.startsWith('#')) return
+
+        const id = href.slice(1)
+        const heading = document.getElementById(id)
+        if (!heading) return
+
+        // Find the scrollable .content container (desktop) or fall back to window (mobile)
+        const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
+        const scrollTarget = (contentEl && window.innerWidth >= 960) ? contentEl : window
+
+        if (scrollTarget instanceof Element) {
+          // Calculate heading position relative to the scrollable container
+          const containerRect = scrollTarget.getBoundingClientRect()
+          const headingRect = heading.getBoundingClientRect()
+          const currentScroll = scrollTarget.scrollTop
+          const offset = headingRect.top - containerRect.top + currentScroll - 32
+          scrollTarget.scrollTo({ top: offset, behavior: 'smooth' })
+        } else {
+          // Mobile: window scroll works fine
+          heading.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+
+        e.preventDefault()
+      }, true) // use capture phase to intercept before VitePress's handler
     }
   }
 } satisfies Theme
