@@ -137,6 +137,24 @@ export default defineConfig({
           ]
         },
       ],
+      '/faq': [
+        {
+          text: '常见问题',
+          collapsed: false,
+          items: [
+            { text: '常见问题', link: '/faq' },
+          ]
+        },
+      ],
+      '/resources': [
+        {
+          text: '参考资源',
+          collapsed: false,
+          items: [
+            { text: '参考资源', link: '/resources' },
+          ]
+        },
+      ],
       '/examples/': [
         {
           text: '实战案例',
