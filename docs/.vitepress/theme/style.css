@@ -338,6 +338,36 @@ html, body {
   color: var(--vp-c-brand-1);
 }
 
+/* Navbar sizing */
+:root {
+  --vp-nav-height: 64px;
+}
+
+@media (max-width: 959px) {
+  :root {
+    --vp-nav-height: 56px;
+  }
+}
+
+.VPNav .VPNavBarTitle .title {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: var(--vp-nav-height);
+}
+
+.VPNav .VPNavBarMenu .VPNavBarMenuLink {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0 14px;
+  line-height: var(--vp-nav-height);
+}
+
+@media (max-width: 959px) {
+  .VPNav .VPNavBarTitle .title {
+    font-size: 16px;
+  }
+}
+
 /* ── 侧边栏增强 ── */
 /* 活跃侧边栏项 — 使用 VitePress 内部的 indicator 元素 */
 .VPSidebarItem.is-active .indicator {
