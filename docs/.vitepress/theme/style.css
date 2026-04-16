@@ -399,6 +399,71 @@ html, body {
   }
 }
 
+/* Mobile adaptive layout */
+@media (max-width: 959px) {
+  .Layout .VPContent,
+  .Layout .VPContent.has-sidebar,
+  .Layout .VPDoc.has-sidebar,
+  .Layout .VPDoc.has-sidebar .container,
+  .Layout .VPDoc.has-sidebar .content {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .Layout .VPContent {
+    padding-top: var(--vp-nav-height) !important;
+  }
+
+  .VPHero {
+    overflow: visible;
+  }
+
+  .VPHero .container {
+    padding: clamp(28px, 9vw, 56px) 24px clamp(20px, 8vw, 48px) !important;
+  }
+
+  .VPHero .main {
+    max-width: min(100%, 680px);
+  }
+
+  .VPHero .name,
+  .VPHero .text {
+    font-size: clamp(32px, 11vw, 56px) !important;
+    line-height: 1.12 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .VPHero .tagline {
+    max-width: 100%;
+    font-size: clamp(17px, 4.8vw, 22px) !important;
+    line-height: 1.55 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .VPHero .actions {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .VPHero .actions .action {
+    margin: 0 !important;
+  }
+
+  .custom-features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: clamp(14px, 4vw, 20px);
+    padding-inline: clamp(16px, 5vw, 24px);
+    margin-top: clamp(28px, 8vw, 48px);
+  }
+
+  .home-section-title {
+    margin-top: clamp(28px, 8vw, 48px);
+    font-size: clamp(20px, 6vw, 24px);
+    padding-inline: clamp(16px, 5vw, 24px);
+  }
+}
+
 /* ── 侧边栏增强 ── */
 /* 活跃侧边栏项 — 使用 VitePress 内部的 indicator 元素 */
 .VPSidebarItem.is-active .indicator {
