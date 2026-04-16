@@ -17,6 +17,12 @@ function setupObserver() {
     })
   }
 
+  // On desktop doc pages with sidebar, the .content div is the scroll container.
+  // Use it as the IntersectionObserver root so reveal triggers on content scroll,
+  // not viewport scroll (since viewport no longer scrolls on these pages).
+  const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
+  const root = (contentEl && window.innerWidth >= 960) ? contentEl : null
+
   observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -26,7 +32,7 @@ function setupObserver() {
         }
       }
     },
-    { threshold: 0.1, rootMargin: '0px 0px -20px 0px' }
+    { threshold: 0.1, rootMargin: '0px 0px -20px 0px', root }
   )
 
   // Wait for page content to render

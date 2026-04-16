@@ -6,11 +6,24 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const progress = ref(0)
+let scrollContainer: Element | Window | null = null
 
 function updateProgress() {
-  const scrollTop = window.scrollY || document.documentElement.scrollTop
-  const scrollHeight = document.documentElement.scrollHeight
-  const clientHeight = document.documentElement.clientHeight
+  let scrollTop: number, scrollHeight: number, clientHeight: number
+
+  if (scrollContainer instanceof Window) {
+    scrollTop = window.scrollY || document.documentElement.scrollTop
+    scrollHeight = document.documentElement.scrollHeight
+    clientHeight = document.documentElement.clientHeight
+  } else if (scrollContainer instanceof Element) {
+    scrollTop = scrollContainer.scrollTop
+    scrollHeight = scrollContainer.scrollHeight
+    clientHeight = scrollContainer.clientHeight
+  } else {
+    progress.value = 0
+    return
+  }
+
   if (scrollHeight - clientHeight <= 0) {
     progress.value = 0
     return
@@ -19,22 +32,53 @@ function updateProgress() {
   progress.value = Math.min(Math.max(scrolled * 100, 0), 100)
 }
 
+function findScrollContainer() {
+  // On doc pages with sidebar (desktop), the .content div is the scroll container.
+  // On home page and mobile, the window is the scroll container.
+  const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
+  if (contentEl && window.innerWidth >= 960) {
+    scrollContainer = contentEl
+  } else {
+    scrollContainer = window
+  }
+}
+
+function attachScrollListener() {
+  findScrollContainer()
+  if (scrollContainer) {
+    scrollContainer.addEventListener('scroll', updateProgress, { passive: true })
+  }
+  updateProgress()
+}
+
+function detachScrollListener() {
+  if (scrollContainer) {
+    scrollContainer.removeEventListener('scroll', updateProgress)
+  }
+}
+
 function onRouteChanged() {
   progress.value = 0
-  setTimeout(updateProgress, 300)
+  detachScrollListener()
+  // Wait for the new page to render, then re-attach
+  setTimeout(() => {
+    attachScrollListener()
+  }, 300)
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', updateProgress, { passive: true })
-  // Listen for VitePress SPA route changes via custom event
+  attachScrollListener()
   window.addEventListener('vitepress-route-changed', onRouteChanged)
-  // Also listen for popstate as fallback
   window.addEventListener('popstate', onRouteChanged)
-  updateProgress()
+  // Also handle resize — container may switch between window and .content
+  window.addEventListener('resize', () => {
+    detachScrollListener()
+    attachScrollListener()
+  })
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', updateProgress)
+  detachScrollListener()
   window.removeEventListener('vitepress-route-changed', onRouteChanged)
   window.removeEventListener('popstate', onRouteChanged)
 })

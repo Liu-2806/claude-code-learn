@@ -17,21 +17,53 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const visible = ref(false)
+let scrollContainer: Element | Window | null = null
+
+function findScrollContainer() {
+  const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
+  if (contentEl && window.innerWidth >= 960) {
+    scrollContainer = contentEl
+  } else {
+    scrollContainer = window
+  }
+}
 
 function checkScroll() {
-  visible.value = window.scrollY > 300
+  findScrollContainer()
+  if (scrollContainer instanceof Window) {
+    visible.value = window.scrollY > 300
+  } else if (scrollContainer instanceof Element) {
+    visible.value = scrollContainer.scrollTop > 300
+  }
 }
 
 function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  findScrollContainer()
+  if (scrollContainer instanceof Window) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  } else if (scrollContainer instanceof Element) {
+    scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
+function onRouteChanged() {
+  visible.value = false
+  setTimeout(() => {
+    findScrollContainer()
+    if (scrollContainer instanceof Element) {
+      scrollContainer.addEventListener('scroll', checkScroll, { passive: true })
+    }
+  }, 300)
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', checkScroll, { passive: true })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', checkScroll)
+  findScrollContainer()
+  if (scrollContainer instanceof Window) {
+    window.addEventListener('scroll', checkScroll, { passive: true })
+  } else if (scrollContainer instanceof Element) {
+    scrollContainer.addEventListener('scroll', checkScroll, { passive: true })
+  }
+  window.addEventListener('vitepress-route-changed', onRouteChanged)
 })
 </script>
 

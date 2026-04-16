@@ -37,8 +37,82 @@
 }
 
 @keyframes page-fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── 导航栏固定定位保障 ── */
+/* VitePress default: VPNav is position:relative on mobile, position:fixed on desktop.
+   We force fixed on all viewports and ensure consistent height so the nav bar
+   never shifts, gets clipped, or "disappears" between page transitions. */
+.VPNav {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: var(--vp-z-index-nav, 100) !important;
+}
+
+/* Ensure the nav bar background is always visible, not transparent on home page. */
+.VPNavBar {
+  background-color: var(--vp-nav-bg-color) !important;
+  backdrop-filter: saturate(50%) blur(8px) !important;
+}
+
+.VPNavBar .divider-line {
+  background-color: var(--vp-c-gutter) !important;
+}
+
+/* Ensure VPContent has padding-top matching nav height on ALL viewports
+   (VitePress only adds it on >=960px by default). */
+.VPContent {
+  padding-top: var(--vp-nav-height, 56px) !important;
+}
+
+/* ── 内容页独立滚动 ── */
+/* On doc pages with sidebar, make the content area scroll independently
+   so users don't need to scroll back to top to click another sidebar link.
+   Only applies on desktop (>=960px) where sidebar is persistent. */
+@media (min-width: 960px) {
+  /* Lock VPContent to viewport height so body scroll is eliminated */
+  .Layout .VPContent.has-sidebar {
+    height: calc(100vh - var(--vp-nav-height, 56px));
+    overflow: hidden;
+    padding-top: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Sidebar is already position:fixed with overflow-y:auto on desktop.
+     Just pin its top to the nav bar bottom and limit height to viewport. */
+  .Layout .VPSidebar {
+    top: var(--vp-nav-height, 56px) !important;
+    height: calc(100vh - var(--vp-nav-height, 56px)) !important;
+  }
+
+  /* Make VPDoc fill the available space and use flex layout */
+  .Layout .VPDoc.has-sidebar {
+    display: flex;
+    height: 100%;
+  }
+
+  .Layout .VPDoc.has-sidebar .container {
+    display: flex;
+    height: 100%;
+  }
+
+  /* The main content area scrolls independently */
+  .Layout .VPDoc.has-sidebar .content {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    padding: 32px 32px 128px !important;
+  }
+
+  /* The right-side outline (aside) is already position:fixed by default,
+     so it scrolls independently. Ensure it stays within viewport. */
+  .Layout .VPDoc.has-sidebar .aside-container {
+    height: 100vh;
+  }
 }
 
 /* ── 首页 Hero 区域 ── */
