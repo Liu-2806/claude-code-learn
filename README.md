@@ -4,9 +4,42 @@
 
 ---
 
+## 5 分钟快速上手
+
+如果你是第一次使用 Claude Code，跟着这三步走，5 分钟内就能体验到 AI 辅助编程：
+
+```bash
+# 第一步：安装
+npm install -g @anthropic-ai/claude-code
+
+# 第二步：认证
+claude /login        # 用浏览器登录 Anthropic 账户（推荐）
+# 或者：export ANTHROPIC_API_KEY="your-api-key"
+
+# 第三步：在你的项目中启动
+cd your-project
+claude
+```
+
+启动后你会看到 Claude Code 的交互界面，直接输入你的需求即可：
+
+```
+> 帮我在 src/utils.ts 里加一个 formatDate 函数，把 ISO 时间字符串转成 "YYYY-MM-DD" 格式
+```
+
+Claude Code 会自动：读取文件 → 理解现有代码 → 编辑文件 → 展示修改结果。每一步修改前都会询问你是否同意（Normal Mode 默认行为）。
+
+按 `Ctrl+C` 退出会话。
+
+**恭喜！你已经成功使用了 Claude Code。** 接下来可以继续阅读下面的完整教程，了解更多高级用法。
+
+---
+
 ## 目录
 
+- [5 分钟快速上手](#5-分钟快速上手)
 - [安装](#安装)
+- [Windows 用户专项指引](#windows-用户专项指引)
 - [认证](#认证)
 - [基本使用](#基本使用)
 - [三种操作模式](#三种操作模式)
@@ -16,12 +49,16 @@
 - [Hooks 钩子](#hooks-钩子)
 - [MCP 服务器集成](#mcp-服务器集成)
 - [IDE 集成](#ide-集成)
+- [CI/CD 与自动化](#cicd-与自动化)
 - [上下文管理技巧](#上下文管理技巧)
+- [高级调试与性能调优](#高级调试与性能调优)
 - [Agentic Coding 工作原理](#agentic-coding-工作原理)
+- [安全与合规](#安全与合规)
 - [模型选择策略](#模型选择策略)
 - [Git Worktree 并行开发](#git-worktree-并行开发)
 - [spec → plan → tasks 结构化工作流](#spec--plan--tasks-结构化工作流)
 - [多会话协作策略](#多会话协作策略)
+- [什么时候不该用 Claude Code](#什么时候不该用-claude-code)
 - [常见问题](#常见问题)
 - [实战案例](#实战案例)
 - [参考资源](#参考资源)
@@ -41,6 +78,44 @@ npm install -g @anthropic-ai/claude-code
 ```bash
 claude
 ```
+
+---
+
+## Windows 用户专项指引
+
+如果你在 Windows 上使用 Claude Code，以下是需要特别注意的事项：
+
+### 推荐使用 WSL2
+
+Windows 原生终端（PowerShell / CMD）可以运行 Claude Code，但**强烈建议使用 WSL2**（Windows Subsystem for Linux），因为：
+
+- `/sandbox` 沙盒模式**仅支持 macOS/Linux/WSL2**，Windows 原生不支持
+- 许多 Claude Code 社区推荐的 shell 命令和工具链都是 Linux 生态
+- Git Worktree 并行开发在 WSL2 中体验更好
+
+安装 WSL2：
+
+```powershell
+wsl --install
+```
+
+安装后重启电脑，在 WSL2 中安装 Node.js 和 Claude Code 即可。
+
+### PowerShell vs Bash
+
+Claude Code 在 Windows 原生终端中**默认使用 PowerShell**。一些关键差异：
+
+| 事项 | PowerShell | Bash（WSL2/Git Bash） |
+|------|-----------|---------------------|
+| 环境变量 | `$env:ANTHROPIC_API_KEY="xxx"` | `export ANTHROPIC_API_KEY="xxx"` |
+| 路径格式 | `C:\Users\project` | `/mnt/c/Users/project`（WSL2） |
+| 命令执行 | 部分 Linux 命令不兼容 | 完全兼容 |
+
+### 常见 Windows 问题
+
+- **npm 全局安装路径问题**：如果 `claude` 命令找不到，可能需要将 npm 全局路径加入 PATH。运行 `npm config get prefix` 查看路径，然后加入系统 PATH。
+- **Node.js 版本**：确保 Node.js 18+。推荐用 `fnm`（Fast Node Manager）管理版本。
+- **终端编码**：如果中文显示乱码，设置终端编码为 UTF-8。
 
 ---
 
@@ -362,6 +437,105 @@ ext install anthropic.claude-code
 
 ---
 
+## CI/CD 与自动化
+
+Claude Code 不只是交互式工具，它也可以嵌入自动化流程中。
+
+### 非交互模式
+
+```bash
+# 单次执行任务后退出，适合脚本和 CI/CD
+claude -p "检查 src/ 下所有 TypeScript 文件，列出未处理的 Promise"
+
+# 指定输出格式为 JSON，方便程序解析
+claude -p "分析这个仓库的测试覆盖率" --output-format json
+
+# 指定模型
+claude -p "审查 PR 的安全风险" --model opus
+```
+
+### GitHub Actions 示例
+
+以下是一个在 CI 中自动审查 PR 的 workflow：
+
+```yaml
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: AI Review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude -p "审查这个 PR 的代码变更，指出潜在的 bug、安全风险和性能问题。输出格式为 Markdown。" \
+            --output-format json > review-result.json
+
+      - name: Post Review Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const result = JSON.parse(fs.readFileSync('review-result.json', 'utf8'));
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: result.result || result.message
+            });
+```
+
+> **注意：** API Key 必须通过 GitHub Secrets 存储，不要硬编码在 workflow 文件中。
+
+### Claude Code SDK
+
+除了 CLI，Claude Code 还提供 SDK 方式嵌入你的 Node.js 应用：
+
+```javascript
+import { query } from '@anthropic-ai/claude-code';
+
+const result = await query({
+  prompt: "修复 auth.ts 中的类型错误",
+  options: {
+    model: "sonnet",
+    allowedTools: ["Read", "Edit", "Bash"]
+  }
+});
+
+console.log(result);
+```
+
+SDK 方式适合构建自定义 AI 辅助工具、内部开发平台、或批量自动化任务。
+
+### 自动化场景举例
+
+| 场景 | 命令 |
+|------|------|
+| PR 自动审查 | `claude -p "审查 PR 的安全风险" --model opus --output-format json` |
+| 依赖升级检查 | `claude -p "检查 package.json 中的过期依赖，建议升级版本"` |
+| 文档自动生成 | `claude -p "为 src/api/ 下所有端点生成 API 文档"` |
+| 代码风格统一 | `claude -p "统一 src/ 下所有文件的 import 排序规则"` |
+| 发布前检查 | `claude -p "检查即将发布的变更中是否有 console.log 残留"` |
+
+---
+
 ## 上下文管理技巧
 
 长时间会话会消耗大量上下文窗口。以下技巧帮助你高效管理：
@@ -374,6 +548,67 @@ ext install anthropic.claude-code
 | **引用文件而非粘贴** | 让 Claude 直接读取文件，而不是把大段代码粘贴到对话中 |
 | **利用 CLAUDE.md** | 把重复出现的指令写入 CLAUDE.md，而不是每次会话都重复 |
 | **非交互模式** | 用 `claude -p "任务"` 快速执行单一任务后退出 |
+
+---
+
+## 高级调试与性能调优
+
+### `--verbose` 深度调试
+
+当你想了解 Claude Code 内部的决策逻辑时，使用 `--verbose` 模式：
+
+```bash
+claude --verbose
+```
+
+这会显示 Claude 的完整工具调用过程，包括：
+- 每次工具调用的参数和返回值（如读取了什么文件、搜索了什么关键词）
+- Claude 选择某个工具的原因（而非直接展示最终结果）
+- 请求和响应的 token 数量明细
+
+**典型用途：**
+- Claude 反复做错同一件事 → 用 verbose 看它每次读取了什么、推断出什么结论
+- Claude 没找到某个文件 → 用 verbose 看它的搜索策略是否合理
+- 性能异常慢 → 用 verbose 查看是否存在不必要的重复工具调用
+
+### `.claudeignore` 排除无关文件
+
+类似 `.gitignore`，`.claudeignore` 让 Claude Code 跳过不需要处理的文件和目录，减少无效的上下文消耗：
+
+```gitignore
+# 排除大型生成文件
+dist/
+build/
+*.min.js
+*.bundle.js
+
+# 排除数据文件
+*.csv
+*.json.bak
+data/seeds/
+
+# 排除无关目录
+docs/archive/
+vendor/
+node_modules/
+```
+
+**什么时候需要 `.claudeignore`？**
+- 仓库很大（超过 1000 个文件）→ 排除不相关的目录
+- 有大型数据文件 → 排除以免浪费上下文窗口
+- 有敏感数据文件 → 排除以免 Claude 读取
+
+### 大仓库上下文优化
+
+在大型项目中使用 Claude Code 时，以下策略帮助保持上下文质量：
+
+| 策略 | 说明 |
+|------|------|
+| **目录级 CLAUDE.md** | 在子目录放置 CLAUDE.md，只描述该模块的上下文，减少全局噪音 |
+| **精准引用文件** | 告诉 Claude 具体文件路径，而不是让它全仓库搜索 |
+| **限制搜索范围** | 描述任务时指定目录，如"在 src/api/ 下查找..." |
+| **分模块会话** | 每个会话只处理一个模块，结束后 `/clear` 开始新模块 |
+| **定期 `/compact`** | 每 15-20 分钟压缩一次，防止历史膨胀 |
 
 ---
 
@@ -407,6 +642,65 @@ Claude Code 的核心不是简单的"单次问答→代码生成"，而是 **Age
 
 ---
 
+## 安全与合规
+
+在企业或团队环境中使用 Claude Code，必须关注以下安全问题：
+
+### API Key 泄露风险
+
+- **绝不把 API Key 硬编码在任何文件中**，包括 CLAUDE.md、配置文件、脚本
+- 使用环境变量 `ANTHROPIC_API_KEY`，并将 `.env` 加入 `.gitignore`
+- OAuth 登录方式（`/login`）比 API Key 更安全——token 自动管理，不会泄露到代码中
+- 在 CI/CD 中使用 GitHub Secrets 或环境变量注入，不要写入 workflow 文件
+
+### 数据隐私
+
+- Claude Code 会将你的代码和对话发送到 Anthropic API 进行处理
+- Anthropic 的数据政策：API 调用的内容**默认不会用于模型训练**
+- 但仍需注意：不要让 Claude 处理包含真实用户数据、密码、密钥的文件
+- 生产数据库连接字符串、真实客户数据等应通过 deny 权限禁止 Claude 访问
+
+### deny 权限最佳实践
+
+以下命令建议始终设为 deny，防止 Claude 执行危险操作：
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -r:*)",
+      "Bash(dropdb:*)",
+      "Bash(drop table:*)",
+      "Bash(curl*production*)",
+      "Bash(ssh:*)",
+      "Bash(sudo:*)",
+      "Bash(chmod 777:*)"
+    ]
+  }
+}
+```
+
+企业级管理员可以在 `/etc/claude-code/settings.json` 中强制配置 deny 规则，用户无法覆盖。
+
+### MCP 服务器安全边界
+
+- MCP 服务器扩展了 Claude 的能力，但也引入了新的安全边界——每个 MCP 服务器都可以让 Claude 访问新的数据源和执行新操作
+- 仅安装你信任的 MCP 服务器，审查其代码和权限范围
+- 不要将包含敏感凭据的 MCP 配置提交到 Git（使用 `.claude/settings.local.json` 存放本地配置，不提交）
+- 团队共享的 MCP 配置（`.mcp.json`）中不应包含 `env` 中的 API Key 等敏感值
+
+### 企业部署建议
+
+| 推荐措施 | 说明 |
+|----------|------|
+| 企业级 deny 规则 | 在 `/etc/claude-code/settings.json` 强制禁止危险命令 |
+| OAuth 认证 | 遣弃 API Key 方式，使用组织账户 OAuth 登录 |
+| 代码审查 | 即使 Claude 自动编辑，仍需人工审查变更后再合并 |
+| 敏感文件排除 | 在 `.claudeignore` 中排除含敏感数据的文件和目录 |
+
+---
+
 ## 模型选择策略
 
 Claude Code 支持三种 Claude 模型，不同场景适合不同选择：
@@ -416,6 +710,18 @@ Claude Code 支持三种 Claude 模型，不同场景适合不同选择：
 | **Opus 4** | 深度推理能力强，慢，贵 | 复杂架构设计、大规模代码迁移、疑难 bug | `claude --model opus` |
 | **Sonnet 4** | 性价比最优，速度与能力平衡 | 日常编码、重构、调试 | 默认或 `claude --model sonnet` |
 | **Haiku 3.5** | 快速低成本 | 快速补全、格式化、简单问答 | `claude --model haiku` |
+
+### 定价参考
+
+Claude Code 使用 Anthropic API，按 token 计费（截至当前，具体价格可能调整，请以[官方定价页](https://docs.anthropic.com/en/docs/about-claude/pricing)为准）：
+
+| 模型 | 输入价格 | 输出价格 | 相对成本 |
+|------|----------|----------|----------|
+| **Opus 4** | $15 / 百万 token | $75 / 百万 token | 最贵，约为 Sonnet 的 5x |
+| **Sonnet 4** | $3 / 百万 token | $15 / 百万 token | 性价比最优 |
+| **Haiku 3.5** | $0.80 / 百万 token | $4 / 百万 token | 最便宜，约为 Sonnet 的 1/4 |
+
+> **成本控制建议：** 日常编码用 Sonnet 4 即可；只在真正需要深度推理时才用 Opus 4。一个复杂任务用 Opus 可能花费 $1-5，同样的任务用 Sonnet 通常 $0.2-1。Batch API 提供 50% 折扣，适合非实时的批量任务。
 
 快速模式 `--fast` 使用同模型但输出更快，不会切换到更低级的模型。
 
@@ -462,6 +768,17 @@ git worktree remove ../feature-a
 git worktree remove ../feature-b
 git worktree remove ../hotfix-1
 ```
+
+### ⚠️ 风险与注意事项
+
+| 风险 | 说明 | 建议 |
+|------|------|------|
+| **合并冲突** | 多个 agent 修改同一文件时必然冲突 | 尽量让各 worktree 修改不同文件；合并前先在 Plan Mode 中规划修改范围 |
+| **`.gitignore` 同步** | 每个 worktree 共享主仓库的 `.gitignore`，但 `.claudeignore` 和 `.claude/settings.local.json` 需各自配置 | 在 CLAUDE.md 中记录这些配置需求，所有 worktree 共享同一份 |
+| **依赖安装** | 各 worktree 的 `node_modules` 需独立安装 | 每个 worktree 启动后先让 Claude 运行 `npm install` |
+| **同时修改同一文件** | 两个 agent 修改同一行的不同部分 → 合并时冲突 | 用 `git diff` 预判冲突区域，或让 Claude 先检查其他 worktree 的变更 |
+
+> **关键原则：** 每个 agent 尽量只修改自己负责的文件集合，避免重叠。合并时务必人工审查冲突解决结果。
 
 ---
 
@@ -578,11 +895,47 @@ git worktree remove ../hotfix-1
 
 ---
 
+## 什么时候不该用 Claude Code
+
+Claude Code 很强大，但它不是万能的。以下场景不适合或需要特别注意：
+
+### 不适合的场景
+
+| 场景 | 原因 | 替代方案 |
+|------|------|----------|
+| **精确到字符级别的修改** | AI 编辑难以做到像素级精确（如调整 CSS 像素值、JSON 中改一个字段名） | 手动编辑或用精准的 find-and-replace 工具 |
+| **超大型仓库全量重构** | 上下文窗口有限，无法同时理解 10 万行代码 | 拆分为模块级小任务，每次只处理一个模块 |
+| **涉及真实生产数据** | 安全风险——代码和对话会发送到 Anthropic API | 使用测试数据或 mock 数据，或在 deny 规则中禁止访问生产数据文件 |
+| **需要 100% 确定性的操作** | AI 有概率产生幻觉或遗漏 | 关键操作人工复核，不要 Auto-Accept |
+| **频繁的细碎格式调整** | 每次 Claude 调整格式都消耗 API token，成本不划算 | 用 linter/formatter（Prettier、ESLint）自动处理 |
+
+### 需要特别注意的场景
+
+- **合并多 agent 并行结果时**：多个 Claude 实例修改同一文件会导致冲突，必须人工审核合并
+- **数据库 schema 变更**：Claude 可能生成不安全的 SQL（如缺少 WHERE 的 DELETE），务必审查
+- **依赖版本升级**：Claude 可能选择不兼容的版本，升级后需人工跑完整测试
+- **安全相关代码**：认证、加密、权限逻辑必须人工审查，AI 容易遗漏边界情况
+
+### 合理的期望
+
+- Claude Code 是**辅助工具**，不是替代开发者——你需要审查和验证它的输出
+- 简单任务（格式化、加注释、小 bug 修复）成功率接近 100%
+- 复杂任务（跨多文件重构、架构设计）成功率约 70-80%，需要人工兜底
+- 把它当作"一个速度很快但偶尔犯错的同事"
+
+---
+
 ## 常见问题
 
 ### Q: 安装后 `claude` 命令找不到？
 
 确认 Node.js 18+ 已安装，全局 npm 包路径正确。可能需要重启终端或重新加载 shell 配置。
+
+**排查步骤：**
+1. 运行 `node -v` 确认 Node.js 版本 ≥ 18
+2. 运行 `npm config get prefix` 查看全局安装路径
+3. 确认该路径在你的 `PATH` 环境变量中
+4. Windows 用户可能需要重启终端或手动添加 npm 全局路径到 PATH
 
 ### Q: 认证失败？
 
@@ -596,9 +949,14 @@ git worktree remove ../hotfix-1
 
 使用 `/compact` 压缩历史，或 `/clear` 清除后重新开始。用 `/cost` 查看 token 消耗情况。
 
+**降低成本的技巧：**
+- 日常任务用 Sonnet 4（默认模型），只在需要深度推理时才用 `--model opus`
+- 复杂任务先用 Plan Mode 规划，避免 Claude 反复试错浪费 token
+- 利用 CLAUDE.md 存储重复指令，不用每次重新描述
+
 ### Q: 如何在 CI/CD 中使用 Claude Code？
 
-使用非交互模式 `claude -p "任务描述"`，配合 API Key 环境变量认证。
+使用非交互模式 `claude -p "任务描述"`，配合 API Key 环境变量认证。详见[CI/CD 与自动化](#cicd-与自动化)章节。
 
 ### Q: /sandbox 在 Windows 上不支持？
 
@@ -613,11 +971,59 @@ export EDITOR="code"    # VS Code
 export EDITOR="vim"     # Vim
 ```
 
+### Q: 连接 Anthropic API 失败（ECONNREFUSED / 超时）？
+
+常见原因：
+- **网络代理未配置**：如果你使用代理，需要设置 `HTTP_PROXY` / `HTTPS_PROXY` 环境变量
+- **防火墙拦截**：确认 `api.anthropic.com` 的 443 端口未被拦截
+- **DNS 问题**：尝试 `curl -I https://api.anthropic.com` 测试连通性
+
+```bash
+# 设置代理示例
+export HTTPS_PROXY="http://your-proxy:port"
+claude
+```
+
+### Q: 上下文窗口溢出（对话太长导致质量下降）？
+
+当对话历史超过模型的上下文窗口时，Claude Code 会自动压缩历史，但可能丢失细节。
+
+**预防措施：**
+- 定期 `/compact` 压缩历史
+- 超过 30 分钟的复杂会话，建议拆分为多个短会话
+- 用 CLAUDE.md 存储关键上下文，而不是依赖对话历史
+- 使用 spec→plan→tasks 工作流，把中间结果落地为文件
+
+### Q: npm 全局安装权限不足？
+
+Linux/macOS 上可能遇到权限问题：
+
+```bash
+# 方案一：修改 npm 全局路径（推荐）
+mkdir ~/.npm-global
+npm config set prefix '~/.npm-global'
+export PATH=~/.npm-global/bin:$PATH
+
+# 方案二：使用 nvm/fnm 管理 Node.js 版本（推荐，避免权限问题）
+nvm install 20
+npm install -g @anthropic-ai/claude-code
+```
+
+### Q: Claude Code 修改了不该修改的文件？
+
+- 在 `.claude/settings.json` 的 `deny` 列表中禁止访问特定路径和命令
+- 使用 `.claudeignore` 文件排除不想让 Claude 读取的目录和文件（类似 `.gitignore` 格式）
+- 敏感项目建议始终使用 Normal Mode，不要切换到 Auto-Accept
+
 ---
 
 ## 实战案例
 
-### 案例 1：从零搭建项目
+### 案例 1：从零搭建项目（完整 walkthrough）
+
+**背景：** 你要创建一个新的 Express + MongoDB 后端项目。
+
+**第一步：启动 Claude Code**
 
 ```bash
 cd ~/projects
@@ -626,14 +1032,100 @@ git init
 claude
 ```
 
+**第二步：描述任务**
+
 ```
 帮我搭建一个 Express + MongoDB 的后端项目，包含用户注册、登录和 CRUD 接口。用 TypeScript，项目结构按模块划分。
 ```
 
-### 案例 2：调试遗留代码
+**Claude 的典型执行过程：**
 
 ```
-这个 auth 模块有 bug，用户登录后偶尔会 500 错误。帮我找到原因并修复。先读取 auth.ts 和相关测试文件，理解问题，然后修复。
+▶ Claude 正在搜索项目结构...
+  → 发现是空目录，没有现有代码
+
+▶ Claude 正在制定计划...
+  → 规划目录结构：src/routes, src/models, src/middleware, src/utils
+  → 规划文件列表：app.ts, routes/user.ts, models/User.ts, middleware/auth.ts
+
+▶ Claude 正在编辑文件...
+  → 创建 package.json（请求确认 ✓）
+  → 创建 tsconfig.json（请求确认 ✓）
+  → 创建 src/app.ts（请求确认 ✓）
+  → 创建 src/routes/user.ts（请求确认 ✓）
+  → 创建 src/models/User.ts（请求确认 ✓）
+  → 创建 src/middleware/auth.ts（请求确认 ✓）
+
+▶ Claude 正在运行命令...
+  → npm install express mongoose bcrypt jsonwebtoken（请求确认 ✓）
+  → npm install -D typescript @types/express @types/mongoose（请求确认 ✓）
+
+▶ 完成！项目结构如下：
+  my-app/
+  ├── package.json
+  ├── tsconfig.json
+  └── src/
+      ├── app.ts           # Express 入口
+      ├── routes/
+      │   └── user.ts      # 用户路由（注册、登录、CRUD）
+      ├── models/
+      │   └── User.ts      # Mongoose 用户模型
+      └── middleware/
+      │   └── auth.ts      # JWT 认证中间件
+```
+
+**第三步：验证**
+
+```
+帮我运行一下，确认启动没问题
+```
+
+Claude 会运行 `npm run dev`，观察输出，如果报错会自动修复。
+
+### 案例 2：调试遗留代码（完整 walkthrough）
+
+**背景：** auth 模块有 bug，用户登录后偶尔 500 错误。
+
+**第一步：用 Plan Mode 先分析**
+
+```
+这个 auth 模块有 bug，用户登录后偶尔会 500 错误。先不要修改，帮我分析原因。
+```
+
+（按 Ctrl+P 进入 Plan Mode，让 Claude 只分析不修改）
+
+**Claude 的典型分析过程：**
+
+```
+▶ Claude 正在读取文件...
+  → 读取 src/auth/auth.ts（发现 42 行有类型推断问题）
+  → 读取 src/auth/auth.test.ts（发现缺少 500 错误的测试覆盖）
+
+▶ Claude 分析结果：
+  1. 第 42 行的 try-catch 缺少对 Mongoose 连接超时的处理
+  2. JWT verify 在 token 格式异常时抛出未捕获的 SyntaxError
+  3. 缺少对 null 用户对象的防御性检查
+  
+  建议修复方案：
+  - 在 catch 块中区分 Mongoose 超时和 JWT 错误
+  - 用 jwt.verify 的回调形式替代同步调用
+  - 添加 null 检查防护
+```
+
+**第二步：退出 Plan Mode，执行修复**
+
+（按 Ctrl+P 退出 Plan Mode）
+
+```
+按上面的方案修复这三个问题
+```
+
+Claude 逐条修复，每次修改请求你确认。
+
+**第三步：验证修复**
+
+```
+帮我运行 auth 模块的测试，确认修复没问题
 ```
 
 ### 案例 3：代码审查与重构
@@ -657,7 +1149,33 @@ cd ../new-feature && claude   # 开发新功能
 ### 案例 5：CI/CD 自动化
 
 ```bash
-claude -p "检查 PR #42 的代码变更，指出潜在的安全问题和性能风险" --model opus
+claude -p "检查 PR #42 的代码变更，指出潜在的安全问题和性能风险" --model opus --output-format json
+```
+
+### 案例 6：spec→plan→tasks 结构化开发
+
+```bash
+# 你先写好 spec.md
+cat > spec.md << 'EOF'
+# 项目：博客系统 API
+## 需求
+- 文章 CRUD、评论系统、用户认证
+- 支持 Markdown 渲染
+## 约束
+- Node.js + Express + SQLite
+- 无外部认证服务
+EOF
+
+# 让 Claude 生成 plan.md
+claude -p "读取 spec.md，生成 plan.md 实施计划"
+# 审查 plan.md（建议在新会话中）
+
+# 让 Claude 生成 tasks.md
+claude -p "读取 plan.md，生成 tasks.md 任务清单"
+
+# 逐条执行
+claude
+> 开始执行 tasks.md 中的任务 1-3：搭建项目结构和数据模型
 ```
 
 ---
