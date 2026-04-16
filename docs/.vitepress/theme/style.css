@@ -1,0 +1,132 @@
+/* ============================================
+   Claude Code 中文教程 - 自定义样式
+   ============================================ */
+
+/* Anthropic 品牌色系 */
+:root {
+  --vp-c-brand-1: #E8713A;
+  --vp-c-brand-2: #D4622E;
+  --vp-c-brand-3: #C05222;
+  --vp-c-brand-light: #F09060;
+  --vp-c-brand-lighter: #F8B088;
+  --vp-c-brand-dark: #C05222;
+  --vp-c-brand-darker: #8B3A15;
+
+  /* 中文排版优化 */
+  --vp-font-family-base: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
+}
+
+/* Dark mode 品牌色 */
+.dark {
+  --vp-c-brand-1: #F09060;
+  --vp-c-brand-2: #E8713A;
+  --vp-c-brand-3: #D4622E;
+  --vp-c-brand-light: #F8B088;
+  --vp-c-brand-lighter: #FCC8A8;
+  --vp-c-brand-dark: #E8713A;
+  --vp-c-brand-darker: #C05222;
+}
+
+/* Hero 区域渐变背景 */
+.VPHero {
+  background-image: linear-gradient(
+    135deg,
+    rgba(232, 113, 58, 0.08) 0%,
+    rgba(232, 113, 58, 0.03) 50%,
+    transparent 100%
+  );
+}
+
+.dark .VPHero {
+  background-image: linear-gradient(
+    135deg,
+    rgba(232, 113, 58, 0.15) 0%,
+    rgba(232, 113, 58, 0.05) 50%,
+    transparent 100%
+  );
+}
+
+/* 中文行高与间距优化 */
+.vp-doc p {
+  line-height: 1.8;
+  margin-bottom: 1.2em;
+}
+
+.vp-doc h2 {
+  margin-top: 2em;
+  margin-bottom: 1em;
+  letter-spacing: 0.02em;
+}
+
+.vp-doc h3 {
+  margin-top: 1.6em;
+  margin-bottom: 0.8em;
+}
+
+.vp-doc ul, .vp-doc ol {
+  line-height: 1.8;
+  padding-left: 1.5em;
+}
+
+.vp-doc li {
+  margin-bottom: 0.4em;
+}
+
+/* 表格优化 */
+.vp-doc table {
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+.vp-doc th {
+  font-weight: 600;
+  background-color: var(--vp-c-brand-1);
+  color: white;
+}
+
+.dark .vp-doc th {
+  background-color: var(--vp-c-brand-2);
+}
+
+/* 代码块样式增强 */
+.vp-doc div[class*='language-'] {
+  border-radius: 8px;
+  margin: 1.2em 0;
+}
+
+.vp-doc code {
+  font-size: 0.9em;
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+}
+
+/* 自定义容器样式 */
+.vp-doc .custom-block.tip {
+  border-color: var(--vp-c-brand-1);
+}
+
+.vp-doc .custom-block.warning {
+  border-color: #F59E0B;
+}
+
+/* Feature 卡片动画 */
+.VPFeature .item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.VPFeature .item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(232, 113, 58, 0.15);
+}
+
+/* 首页 tagline */
+.name {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* 编辑链接与最后更新 */
+.VPLastUpdated {
+  font-size: 0.85em;
+  color: var(--vp-c-text-2);
+}

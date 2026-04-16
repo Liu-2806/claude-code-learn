@@ -1,2 +1,13 @@
 # Claude Code local config (machine-specific, do not share)
 .claude/
+
+# VitePress build output
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
