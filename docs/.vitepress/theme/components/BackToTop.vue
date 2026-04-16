@@ -92,6 +92,15 @@ onMounted(() => {
   box-shadow: 0 6px 24px rgba(232, 113, 58, 0.5);
 }
 
+@media (max-width: 959px) {
+  .back-to-top-btn {
+    bottom: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
 .back-to-top-btn:active {
   transform: scale(0.95);
 }

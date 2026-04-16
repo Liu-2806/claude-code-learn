@@ -100,6 +100,12 @@ const particles = computed(() => {
   border-color: #E8713A;
 }
 
+@media (max-width: 959px) {
+  .feature-card:hover {
+    transform: translateY(-4px); /* 手机端去掉 scale，防止溢出 */
+  }
+}
+
 :global(.dark) .feature-card:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow:
