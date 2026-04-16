@@ -1,91 +1,220 @@
 <template>
-  <div class="feature-card" @mouseenter="shimmerActive = true" @mouseleave="shimmerActive = false">
-    <div class="shimmer-overlay" v-if="shimmerActive" />
-    <div class="feature-icon">
-      <span class="icon-text">{{ icon }}</span>
+  <a class="feature-card-link" :href="link">
+    <div
+      class="feature-card"
+      @mouseenter="hovered = true"
+      @mouseleave="hovered = false"
+    >
+      <!-- Hover shimmer sweep -->
+      <div class="shimmer-overlay" v-if="hovered" />
+
+      <!-- Top-edge glow line -->
+      <div class="card-glow-edge" />
+
+      <!-- Floating particles on hover -->
+      <div class="card-particles" v-if="hovered">
+        <span
+          v-for="p in particles"
+          :key="p.id"
+          class="particle"
+          :style="{
+            left: p.x + '%',
+            top: p.y + '%',
+            animationDelay: p.delay + 's',
+            animationDuration: p.dur + 's',
+            '--p-size': p.size + 'px',
+            '--p-color': p.color,
+          }"
+        />
+      </div>
+
+      <div class="feature-icon">
+        <span class="icon-text">{{ icon }}</span>
+      </div>
+      <h3 class="feature-title">
+        {{ title }}
+        <span class="arrow">→</span>
+      </h3>
+      <p class="feature-details">{{ details }}</p>
     </div>
-    <h3 class="feature-title">{{ title }}</h3>
-    <p class="feature-details">{{ details }}</p>
-  </div>
+  </a>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   icon: string
   title: string
   details: string
+  link: string
 }>()
 
-const shimmerActive = ref(false)
+const hovered = ref(false)
+
+const PARTICLE_COLORS = ['#E8713A', '#F09060', '#FCC8A8', '#FFD700', '#FF6B6B', '#4ECDC4']
+
+const particles = computed(() => {
+  const arr = []
+  for (let i = 0; i < 8; i++) {
+    arr.push({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      delay: Math.random() * 0.5,
+      dur: 1 + Math.random() * 1,
+      size: 3 + Math.random() * 4,
+      color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+    })
+  }
+  return arr
+})
 </script>
 
 <style scoped>
+.feature-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .feature-card {
   position: relative;
-  padding: 24px;
-  border-radius: 12px;
+  padding: 28px 24px 24px;
+  border-radius: 16px;
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1),
+              box-shadow 0.35s cubic-bezier(.4,0,.2,1),
+              border-color 0.35s ease;
+  cursor: pointer;
 }
 
 .feature-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(232, 113, 58, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 16px 40px rgba(232, 113, 58, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(232, 113, 58, 0.3);
   border-color: #E8713A;
 }
 
 :global(.dark) .feature-card:hover {
-  box-shadow: 0 12px 32px rgba(240, 144, 96, 0.2), 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 16px 40px rgba(240, 144, 96, 0.22),
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(240, 144, 96, 0.3);
   border-color: #F09060;
 }
 
+/* Top-edge glow line */
+.card-glow-edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--vp-c-brand-1), transparent);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.feature-card:hover .card-glow-edge {
+  opacity: 0.7;
+}
+
+:global(.dark) .feature-card:hover .card-glow-edge {
+  opacity: 0.8;
+}
+
+/* Shimmer sweep */
 .shimmer-overlay {
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 100%;
+  left: -120%;
+  width: 120%;
   height: 100%;
   background: linear-gradient(
     90deg,
-    transparent,
-    rgba(232, 113, 58, 0.06),
-    transparent
+    transparent 0%,
+    rgba(232, 113, 58, 0.05) 40%,
+    rgba(232, 113, 58, 0.12) 50%,
+    rgba(232, 113, 58, 0.05) 60%,
+    transparent 100%
   );
-  animation: shimmer-slide 0.8s ease-out forwards;
+  animation: shimmer-sweep 0.9s ease-out forwards;
+  pointer-events: none;
 }
 
 :global(.dark) .shimmer-overlay {
   background: linear-gradient(
     90deg,
-    transparent,
-    rgba(240, 144, 96, 0.08),
-    transparent
+    transparent 0%,
+    rgba(240, 144, 96, 0.06) 40%,
+    rgba(240, 144, 96, 0.15) 50%,
+    rgba(240, 144, 96, 0.06) 60%,
+    transparent 100%
   );
 }
 
-@keyframes shimmer-slide {
-  from { left: -100%; }
-  to { left: 100%; }
+@keyframes shimmer-sweep {
+  from { left: -120%; }
+  to { left: 120%; }
 }
 
+/* Floating particles */
+.card-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: var(--p-size);
+  height: var(--p-size);
+  border-radius: 50%;
+  background: var(--p-color);
+  opacity: 0;
+  animation: particle-float linear forwards;
+  pointer-events: none;
+}
+
+@keyframes particle-float {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  15% { opacity: 0.8; transform: translateY(-8px) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(0.3); }
+}
+
+/* Icon */
 .feature-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   margin-bottom: 16px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(232, 113, 58, 0.15), rgba(240, 144, 96, 0.08));
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(232, 113, 58, 0.18), rgba(240, 144, 96, 0.08));
   animation: icon-breathe 3s ease-in-out infinite;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  background: linear-gradient(135deg, rgba(232, 113, 58, 0.25), rgba(240, 144, 96, 0.12));
+  box-shadow: 0 4px 12px rgba(232, 113, 58, 0.2);
 }
 
 :global(.dark) .feature-icon {
   background: linear-gradient(135deg, rgba(240, 144, 96, 0.2), rgba(232, 113, 58, 0.1));
+}
+
+:global(.dark) .feature-card:hover .feature-icon {
+  background: linear-gradient(135deg, rgba(240, 144, 96, 0.3), rgba(232, 113, 58, 0.15));
+  box-shadow: 0 4px 12px rgba(240, 144, 96, 0.2);
 }
 
 @keyframes icon-breathe {
@@ -94,17 +223,35 @@ const shimmerActive = ref(false)
 }
 
 .icon-text {
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1;
 }
 
+/* Title */
 .feature-title {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   margin-bottom: 8px;
   color: var(--vp-c-text-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
+.arrow {
+  font-size: 16px;
+  color: var(--vp-c-brand-1);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.feature-card:hover .arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Details */
 .feature-details {
   font-size: 14px;
   line-height: 1.7;

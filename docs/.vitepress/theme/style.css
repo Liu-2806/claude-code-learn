@@ -30,13 +30,15 @@
 }
 
 /* ── 全局页面过渡 ── */
-.VPContent {
+/* Only animate the inner content container, never VPContent itself,
+   to avoid affecting nav bar layout or causing content shifts. */
+.vp-doc .main {
   animation: page-fade-in 0.35s ease-out;
 }
 
 @keyframes page-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── 首页 Hero 区域 ── */
@@ -45,7 +47,7 @@
   overflow: hidden;
 }
 
-/* 动态渐变光斑背景 */
+/* 动态渐变光斑背景 — 三层 */
 .VPHero::before,
 .VPHero::after {
   content: '';
@@ -59,7 +61,7 @@
 .VPHero::before {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(232, 113, 58, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(232, 113, 58, 0.14) 0%, transparent 70%);
   top: -100px;
   right: -50px;
   animation: float-blob-1 8s ease-in-out infinite;
@@ -68,18 +70,42 @@
 .VPHero::after {
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, rgba(240, 144, 96, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(240, 144, 96, 0.1) 0%, transparent 70%);
   bottom: -80px;
   left: 10%;
   animation: float-blob-2 10s ease-in-out infinite;
 }
 
+/* Third blob via inner element — .VPHero .main */
+.VPHero .main {
+  position: relative;
+}
+
+.VPHero .main::after {
+  content: '';
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(70px);
+  background: radial-gradient(circle, rgba(252, 200, 168, 0.12) 0%, transparent 70%);
+  top: -40px;
+  left: -60px;
+  pointer-events: none;
+  animation: float-blob-3 12s ease-in-out infinite;
+  z-index: -1;
+}
+
 .dark .VPHero::before {
-  background: radial-gradient(circle, rgba(240, 144, 96, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(240, 144, 96, 0.18) 0%, transparent 70%);
 }
 
 .dark .VPHero::after {
-  background: radial-gradient(circle, rgba(232, 113, 58, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(232, 113, 58, 0.12) 0%, transparent 70%);
+}
+
+.dark .VPHero .main::after {
+  background: radial-gradient(circle, rgba(240, 144, 96, 0.14) 0%, transparent 70%);
 }
 
 @keyframes float-blob-1 {
@@ -92,6 +118,11 @@
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(-25px, 15px) scale(1.05); }
   66% { transform: translate(15px, -20px) scale(0.9); }
+}
+
+@keyframes float-blob-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate(20px, 30px) scale(1.15); opacity: 0.7; }
 }
 
 /* Hero 文字入场动画 */
@@ -131,32 +162,45 @@
 .VPHero .VPButton.brand::after {
   content: '';
   position: absolute;
-  inset: -4px;
+  inset: -6px;
   border-radius: inherit;
   background: linear-gradient(135deg, #E8713A, #F09060);
   opacity: 0;
   z-index: -1;
   transition: opacity 0.3s ease;
-  filter: blur(8px);
+  filter: blur(12px);
 }
 
 .VPHero .VPButton.brand:hover::after {
-  opacity: 0.4;
+  opacity: 0.5;
   animation: pulse-glow 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.05); }
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
 }
 
 .dark .VPHero .VPButton.brand::after {
   background: linear-gradient(135deg, #F09060, #E8713A);
 }
 
-/* 首页 tagline 名字品牌色 */
+/* 首页 tagline 名字品牌色 + 微光动画 */
 .name {
   color: var(--vp-c-brand-1) !important;
+}
+
+/* Hero actions buttons stagger animation */
+.VPHero .actions .action:nth-child(1) {
+  animation: hero-action-in 0.5s ease-out 0.4s both;
+}
+.VPHero .actions .action:nth-child(2) {
+  animation: hero-action-in 0.5s ease-out 0.55s both;
+}
+
+@keyframes hero-action-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── 导航栏增强 ── */
@@ -205,37 +249,22 @@
 }
 
 /* ── 侧边栏增强 ── */
-/* 活跃侧边栏项左侧品牌色指示条 */
-.VPSidebar .VPSidebarLink.is-active {
-  position: relative;
-}
-
-.VPSidebar .VPSidebarLink.is-active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background: var(--brand-gradient);
-  animation: sidebar-indicator-in 0.35s ease-out;
-}
-
-@keyframes sidebar-indicator-in {
-  from { transform: scaleY(0); transform-origin: top; }
-  to { transform: scaleY(1); transform-origin: top; }
+/* 活跃侧边栏项 — 使用 VitePress 内部的 indicator 元素 */
+.VPSidebarItem.is-active .indicator {
+  background: var(--vp-c-brand-1) !important;
+  width: 2px !important;
 }
 
 /* 侧边栏分组标题左侧装饰线 */
-.VPSidebar .VPSidebarGroup .title {
+.VPSidebarItem.level-0 > .item > .text {
   position: relative;
-  padding-left: 12px;
+  padding-left: 4px;
 }
 
-.VPSidebar .VPSidebarGroup .title::before {
+.VPSidebarItem.level-0 > .item > .text::before {
   content: '';
   position: absolute;
-  left: 0;
+  left: -12px;
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
@@ -245,19 +274,19 @@
   opacity: 0.6;
 }
 
-/* 侧边栏条目 hover 微右移 + 背景淡入 */
-.VPSidebar .VPSidebarLink {
+/* 侧边栏链接 hover 微右移 + 背景淡入 */
+.VPSidebarItem.is-link > .item > .link {
   transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
   border-radius: 6px;
 }
 
-.VPSidebar .VPSidebarLink:hover {
+.VPSidebarItem.is-link > .item > .link:hover {
   transform: translateX(4px);
   background-color: rgba(232, 113, 58, 0.06);
   color: var(--vp-c-brand-1);
 }
 
-.dark .VPSidebar .VPSidebarLink:hover {
+.dark .VPSidebarItem.is-link > .item > .link:hover {
   background-color: rgba(240, 144, 96, 0.08);
   color: var(--vp-c-brand-1);
 }
@@ -416,6 +445,7 @@
   margin: 1.2em 0;
   position: relative;
   overflow: hidden;
+  padding-top: 28px;
 }
 
 /* 语言标签圆角徽章 */
@@ -432,6 +462,7 @@
   opacity: 0.85;
   z-index: 2;
   letter-spacing: 0.03em;
+  line-height: 1.4;
 }
 
 .dark .vp-doc div[class*='language-'] > span.lang {
@@ -494,10 +525,11 @@
 .custom-features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 20px;
   max-width: 1152px;
   margin: 0 auto;
   padding: 0 24px;
+  margin-top: 48px;
 }
 
 @media (max-width: 768px) {
@@ -512,14 +544,85 @@
   }
 }
 
-/* ── 全局组件注入位置 ── */
-.global-ui-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 9999;
-  pointer-events: none;
+/* Section title above features */
+.home-section-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  margin-top: 48px;
+  letter-spacing: 0.04em;
+  position: relative;
+  padding-bottom: 12px;
+  max-width: 1152px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.home-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: var(--brand-gradient);
+  border-radius: 2px;
+}
+
+/* CTA section at bottom of features */
+.home-cta-section {
+  text-align: center;
+  margin-top: 40px;
+  padding-bottom: 24px;
+}
+
+.home-cta-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--vp-c-brand-1);
+  border: 2px solid var(--vp-c-brand-1);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.home-cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brand-gradient);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.home-cta-btn:hover {
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(232, 113, 58, 0.3);
+}
+
+.home-cta-btn:hover::before {
+  opacity: 1;
+}
+
+.home-cta-btn span,
+.home-cta-btn {
+  position: relative;
+  z-index: 1;
+}
+
+:global(.dark) .home-cta-btn:hover {
+  box-shadow: 0 8px 24px rgba(240, 144, 96, 0.35);
 }
 
 /* ── 链接样式增强 ── */

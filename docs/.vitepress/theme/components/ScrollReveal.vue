@@ -3,10 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, watch } from 'vue'
-import { useRoute } from 'vitepress'
+import { onMounted, onUnmounted } from 'vue'
 
-const route = useRoute()
 let observer: IntersectionObserver | null = null
 let currentObserved: Element[] = []
 
@@ -31,30 +29,39 @@ function setupObserver() {
     { threshold: 0.1, rootMargin: '0px 0px -20px 0px' }
   )
 
-  // Wait a bit for the page content to render
+  // Wait for page content to render
   setTimeout(() => {
     const contentEls = document.querySelectorAll(
       '.vp-doc h2, .vp-doc h3, .vp-doc p, .vp-doc ul, .vp-doc ol, .vp-doc table, .vp-doc .custom-block'
     )
     currentObserved = Array.from(contentEls)
     currentObserved.forEach(el => {
-      el.classList.add('scroll-reveal-target')
+      // Only hide elements below current viewport — elements already visible should stay visible
+      const rect = el.getBoundingClientRect()
+      if (rect.top > window.innerHeight) {
+        el.classList.add('scroll-reveal-target')
+      }
       observer?.observe(el)
     })
-  }, 100)
+  }, 300)
+}
+
+function onRouteChanged() {
+  setupObserver()
 }
 
 onMounted(() => {
   setupObserver()
-})
-
-// Re-observe on route change (VitePress SPA navigation)
-watch(() => route.path, () => {
-  setupObserver()
+  // Listen for VitePress SPA route changes via custom event
+  window.addEventListener('vitepress-route-changed', onRouteChanged)
+  // Also listen for popstate as fallback
+  window.addEventListener('popstate', onRouteChanged)
 })
 
 onUnmounted(() => {
   observer?.disconnect()
+  window.removeEventListener('vitepress-route-changed', onRouteChanged)
+  window.removeEventListener('popstate', onRouteChanged)
 })
 </script>
 
