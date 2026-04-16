@@ -4,6 +4,7 @@ export default defineConfig({
   lang: 'zh-CN',
   title: 'Claude Code 中文教程',
   description: 'Anthropic 官方 CLI 工具的完整中文使用指南',
+  base: '/claude-code-learn/',
   head: [
     ['meta', { name: 'og:title', content: 'Claude Code 中文教程' }],
     ['meta', { name: 'og:description', content: 'Anthropic 官方 CLI 工具的完整中文使用指南' }],
