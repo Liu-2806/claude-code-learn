@@ -356,20 +356,26 @@ html, body {
 }
 
 .VPNav .VPNavBar .container,
-.VPNav .VPNavBarTitle,
-.VPNav .VPNavBarMenu,
-.VPNav .VPNavBarExtra,
-.VPNav .VPNavBarAppearance,
-.VPNav .VPSocialLinks {
+.VPNav .VPNavBarTitle {
   display: flex;
   align-items: center;
+}
+
+@media (min-width: 960px) {
+  .VPNav .VPNavBarMenu,
+  .VPNav .VPNavBarExtra,
+  .VPNav .VPNavBarAppearance,
+  .VPNav .VPSocialLinks {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .VPNav .VPNavBarTitle .title {
   font-size: 19px;
   font-weight: 700;
   line-height: 1.3;
-  transform: translateY(2px);
+  transform: translateY(4px);
 }
 
 .VPNav .VPNavBarMenu .VPNavBarMenuLink {
@@ -380,10 +386,14 @@ html, body {
   font-weight: 600;
   padding: 0 18px;
   line-height: 1.3;
-  transform: translateY(2px);
+  transform: translateY(4px);
 }
 
 @media (max-width: 959px) {
+  .VPNav .VPNavBarMenu {
+    display: none;
+  }
+
   .VPNav .VPNavBarTitle .title {
     font-size: 17px;
   }
