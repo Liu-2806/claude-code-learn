@@ -54,39 +54,72 @@ export default {
     // Fix: outline (right-side TOC) clicks don't scroll the content area
     // because the content div uses overflow-y:auto (independent scroll).
     // Native anchor navigation scrolls the document, not nested scrollable containers.
-    // Intercept outline link clicks and manually scroll within the .content container.
     if (typeof window !== 'undefined') {
+      // Scroll to a heading within the independent .content scroll container
+      function scrollToHeadingInContent(id: string) {
+        const heading = document.getElementById(id)
+        if (!heading) return false
+
+        // Desktop with sidebar: .content is the scrollable container
+        const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
+        if (!contentEl || window.innerWidth < 960) return false
+
+        const containerRect = contentEl.getBoundingClientRect()
+        const headingRect = heading.getBoundingClientRect()
+
+        // If heading rect is essentially zero, it might not be rendered yet
+        if (headingRect.height === 0 && headingRect.width === 0) return false
+
+        const offset = headingRect.top - containerRect.top + contentEl.scrollTop - 32
+        contentEl.scrollTo({ top: offset, behavior: 'smooth' })
+        return true
+      }
+
+      // Capture-phase listener to intercept outline link clicks
       document.addEventListener('click', (e: MouseEvent) => {
         const target = e.target as HTMLElement
-        // VitePress outline links are <a> elements inside .VPDocOutline
-        const outlineLink = target.closest('a.outline-link')
-        if (!outlineLink) return
+        const link = target.closest('a[href^="#"]') as HTMLAnchorElement | null
+        if (!link) return
 
-        const href = outlineLink.getAttribute('href')
+        // Only handle links inside the aside/outline area
+        const isOutline = link.closest('.VPDocAside') ||
+                          link.closest('.aside-container') ||
+                          link.closest('.VPODocOutlineItem')
+        if (!isOutline) return
+
+        const href = link.getAttribute('href')
         if (!href || !href.startsWith('#')) return
 
-        const id = href.slice(1)
+        const id = decodeURIComponent(href.slice(1))
+
+        // Check if heading exists in DOM
         const heading = document.getElementById(id)
         if (!heading) return
 
-        // Find the scrollable .content container (desktop) or fall back to window (mobile)
+        // If .content scroll container exists (desktop + sidebar), handle it manually
         const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
-        const scrollTarget = (contentEl && window.innerWidth >= 960) ? contentEl : window
+        if (contentEl && window.innerWidth >= 960) {
+          e.preventDefault()
+          e.stopPropagation()
 
-        if (scrollTarget instanceof Element) {
-          // Calculate heading position relative to the scrollable container
-          const containerRect = scrollTarget.getBoundingClientRect()
-          const headingRect = heading.getBoundingClientRect()
-          const currentScroll = scrollTarget.scrollTop
-          const offset = headingRect.top - containerRect.top + currentScroll - 32
-          scrollTarget.scrollTo({ top: offset, behavior: 'smooth' })
-        } else {
-          // Mobile: window scroll works fine
-          heading.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          // Use a small delay to handle CSS animation settling
+          setTimeout(() => scrollToHeadingInContent(id), 50)
+
+          // Update URL hash for back button support
+          if (window.location.hash !== '#' + id) {
+            history.pushState(null, '', '#' + id)
+          }
         }
+        // Otherwise let VitePress's native handler work (mobile/no-sidebar)
+      }, true)
 
-        e.preventDefault()
-      }, true) // use capture phase to intercept before VitePress's handler
+      // Handle browser back/forward to restore scroll position within .content
+      window.addEventListener('popstate', () => {
+        const hash = window.location.hash.slice(1)
+        if (hash) {
+          setTimeout(() => scrollToHeadingInContent(decodeURIComponent(hash)), 100)
+        }
+      })
     }
 
     // Navbar scroll glass effect: add .scrolled class when user scrolls
