@@ -71,19 +71,6 @@ onUnmounted(() => {
 })
 </script>
 
-<style>
-.scroll-reveal-target {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.scroll-reveal-target.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-</style>
-
 <style scoped>
 .scroll-reveal {
   display: none;

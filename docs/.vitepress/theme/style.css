@@ -121,6 +121,10 @@ html, body {
 .VPHero {
   position: relative;
   overflow: hidden;
+  background-image:
+    linear-gradient(rgba(232, 113, 58, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232, 113, 58, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 /* 动态渐变光斑背景 — 三层 */
@@ -132,6 +136,7 @@ html, body {
   filter: blur(80px);
   opacity: 0.5;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
 .VPHero::before {
@@ -169,6 +174,7 @@ html, body {
   left: -60px;
   pointer-events: none;
   animation: float-blob-3 12s ease-in-out infinite;
+  will-change: transform, opacity;
   z-index: -1;
 }
 
@@ -302,16 +308,7 @@ html, body {
   color: var(--vp-c-brand-1);
 }
 
-/* Navbar sizing */
-:root {
-  --vp-nav-height: 72px;
-}
-
-@media (max-width: 959px) {
-  :root {
-    --vp-nav-height: 60px;
-  }
-}
+/* Navbar sizing — consolidated single declaration */
 
 .VPNav,
 .VPNav .VPNavBar,
@@ -480,6 +477,17 @@ html, body {
   letter-spacing: 0.02em;
   position: relative;
   padding-left: 16px;
+  background: linear-gradient(90deg, var(--vp-c-text-1) 0%, var(--vp-c-brand-1) 200%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 4s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
 }
 
 .vp-doc h2::before {
@@ -756,6 +764,8 @@ html, body {
   transition: all 0.3s cubic-bezier(.4,0,.2,1);
   position: relative;
   overflow: hidden;
+  background-size: 200% 200%;
+  background-position: 0% 50%;
 }
 
 .home-cta-btn::before {
@@ -763,8 +773,20 @@ html, body {
   position: absolute;
   inset: 0;
   background: var(--brand-gradient);
+  background-size: 200% 200%;
+  animation: btn-gradient-move 3s ease infinite;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.home-cta-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.3) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
   z-index: 0;
 }
 
@@ -773,10 +795,21 @@ html, body {
   border-color: transparent;
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(232, 113, 58, 0.3);
+  background-position: 100% 50%;
 }
 
 .home-cta-btn:hover::before {
   opacity: 1;
+}
+
+.home-cta-btn:hover::after {
+  opacity: 1;
+}
+
+@keyframes btn-gradient-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .home-cta-btn span,
@@ -787,7 +820,24 @@ html, body {
 
 /* ── 链接样式增强 ── */
 .vp-doc a {
+  position: relative;
   transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+.vp-doc a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--brand-gradient);
+  transition: width 0.3s ease;
+  border-radius: 1px;
+}
+
+.vp-doc a:hover::after {
+  width: 100%;
 }
 
 /* ── 全局滚动条美化 ── */
@@ -818,4 +868,76 @@ html, body {
 /* ── footer 增强 ── */
 .VPFooter {
   border-top: 1px solid rgba(232, 113, 58, 0.1);
+}
+
+/* ── 性能提示：为持续动画的图层启用 GPU 加速 ── */
+.feature-icon {
+  will-change: transform;
+}
+
+.fireworks-canvas {
+  will-change: transform;
+}
+
+/* ── 无障碍：尊重用户的减少动画偏好 ── */
+@media (prefers-reduced-motion: reduce) {
+  /* 禁用持续性装饰动画 */
+  .feature-icon,
+  .icon-breathe {
+    animation: none !important;
+  }
+
+  /* 禁用 Hero blob 背景动画 */
+  .shimmer-overlay {
+    animation: none !important;
+  }
+
+  /* 禁用卡片粒子浮动 */
+  .particle {
+    animation: none !important;
+  }
+
+  /* 禁用图标呼吸动画 */
+  @keyframes icon-breathe {
+    0%, 100% { transform: none; }
+  }
+
+  /* 禁用 shimmer 扫光 */
+  @keyframes shimmer-sweep {
+    from, to { left: 0; }
+  }
+
+  /* 禁用粒子浮动 */
+  @keyframes particle-float {
+    0%, 100% { opacity: 0; transform: none; }
+  }
+
+  /* 滚动淡入改为即时显示，无过渡动画 */
+  .scroll-reveal-target {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* 回到顶部按钮移除过渡 */
+  .back-to-top-enter-active,
+  .back-to-top-leave-active {
+    transition: opacity 0.01s ease !important;
+  }
+
+  /* 禁用页脚呼吸光效等持续动画 */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* 保留用户交互反馈（hover/active），但缩短时长 */
+  .feature-card,
+  .back-to-top-btn,
+  .feature-card-link {
+    transition-duration: 0.1s !important;
+  }
 }

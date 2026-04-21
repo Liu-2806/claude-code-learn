@@ -9,6 +9,13 @@ export default defineConfig({
   head: [
     ['meta', { name: 'og:title', content: 'Claude Code 中文教程' }],
     ['meta', { name: 'og:description', content: 'Anthropic 官方 CLI 工具的完整中文使用指南' }],
+    ['meta', { name: 'og:type', content: 'website' }],
+    ['meta', { name: 'og:locale', content: 'zh_CN' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Claude Code 中文教程' }],
+    ['meta', { name: 'twitter:description', content: 'Anthropic 官方 CLI 工具的完整中文使用指南' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/claude-code-learn/badges.svg' }],
+    ['meta', { name: 'theme-color', content: '#E8713A' }],
   ],
 
   themeConfig: {

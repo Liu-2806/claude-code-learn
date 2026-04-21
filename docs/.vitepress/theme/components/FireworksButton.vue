@@ -27,12 +27,11 @@ let animFrameId: number | null = null
 
 const COLORS = ['#E8713A', '#F09060', '#FCC8A8', '#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96E6A1']
 
-function createFireworks(x: number, y: number) {
-  const count = 50
+function spawnParticles(x: number, y: number, count: number, speedRange: [number, number], lifeRange: [number, number], sizeRange: [number, number]) {
   for (let i = 0; i < count; i++) {
     const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5
-    const speed = 2 + Math.random() * 4
-    const maxLife = 30 + Math.random() * 30
+    const speed = speedRange[0] + Math.random() * (speedRange[1] - speedRange[0])
+    const maxLife = lifeRange[0] + Math.random() * (lifeRange[1] - lifeRange[0])
     particles.push({
       x,
       y,
@@ -41,13 +40,17 @@ function createFireworks(x: number, y: number) {
       life: maxLife,
       maxLife,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      size: 2 + Math.random() * 2
+      size: sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0])
     })
   }
   if (!animating) {
     animating = true
     animate()
   }
+}
+
+function createFireworks(x: number, y: number) {
+  spawnParticles(x, y, 50, [2, 6], [30, 60], [2, 4])
 }
 
 function animate() {
@@ -117,31 +120,11 @@ function handleGlobalClick(e: MouseEvent) {
   const copyBtn = target.closest('.copy')
   if (copyBtn) {
     const btnRect = copyBtn.getBoundingClientRect()
-    // Mini fireworks - fewer particles for smaller target
     const canvas = canvasRef.value
     if (!canvas || !containerRef.value) return
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-    const count = 20
-    for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5
-      const speed = 1 + Math.random() * 2
-      const maxLife = 15 + Math.random() * 15
-      particles.push({
-        x: btnRect.left + btnRect.width / 2,
-        y: btnRect.top + btnRect.height / 2,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        life: maxLife,
-        maxLife,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        size: 1.5 + Math.random() * 1
-      })
-    }
-    if (!animating) {
-      animating = true
-      animate()
-    }
+    spawnParticles(btnRect.left + btnRect.width / 2, btnRect.top + btnRect.height / 2, 20, [1, 3], [15, 30], [1.5, 2.5])
   }
 }
 
