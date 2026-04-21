@@ -108,6 +108,7 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Prompt 工程与技巧', link: '/guide/prompt-engineering' },
+            { text: '高级 Prompt 技巧', link: '/guide/advanced-prompting' },
             { text: '上下文管理与性能调优', link: '/guide/context-management' },
           ]
         },
