@@ -6,6 +6,7 @@ import FireworksButton from './components/FireworksButton.vue'
 import ReadingProgress from './components/ReadingProgress.vue'
 import BackToTop from './components/BackToTop.vue'
 import ScrollReveal from './components/ScrollReveal.vue'
+import CursorGlow from './components/CursorGlow.vue'
 import './style.css'
 
 export default {
@@ -98,12 +99,14 @@ if (typeof window !== 'undefined') {
 
     const overlayApp = createApp({
       template: `
+        <CursorGlow />
         <FireworksButton />
         <ReadingProgress />
         <BackToTop />
         <ScrollReveal />
       `
     })
+    overlayApp.component('CursorGlow', CursorGlow)
     overlayApp.component('FireworksButton', FireworksButton)
     overlayApp.component('ReadingProgress', ReadingProgress)
     overlayApp.component('BackToTop', BackToTop)

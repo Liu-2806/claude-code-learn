@@ -18,18 +18,20 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const visible = ref(false)
 let scrollContainer: Element | Window | null = null
+let scrollEl: Element | null = null
 
 function findScrollContainer() {
   const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
   if (contentEl && window.innerWidth >= 960) {
     scrollContainer = contentEl
+    scrollEl = contentEl
   } else {
     scrollContainer = window
+    scrollEl = null
   }
 }
 
 function checkScroll() {
-  findScrollContainer()
   if (scrollContainer instanceof Window) {
     visible.value = window.scrollY > 300
   } else if (scrollContainer instanceof Element) {
@@ -46,24 +48,47 @@ function scrollToTop() {
   }
 }
 
-function onRouteChanged() {
-  visible.value = false
-  setTimeout(() => {
-    findScrollContainer()
-    if (scrollContainer instanceof Element) {
-      scrollContainer.addEventListener('scroll', checkScroll, { passive: true })
-    }
-  }, 300)
+function detachScrollListener() {
+  if (scrollEl) {
+    scrollEl.removeEventListener('scroll', checkScroll)
+  } else {
+    window.removeEventListener('scroll', checkScroll)
+  }
 }
 
-onMounted(() => {
+function attachScrollListener() {
   findScrollContainer()
   if (scrollContainer instanceof Window) {
     window.addEventListener('scroll', checkScroll, { passive: true })
   } else if (scrollContainer instanceof Element) {
     scrollContainer.addEventListener('scroll', checkScroll, { passive: true })
   }
+  checkScroll()
+}
+
+function onRouteChanged() {
+  visible.value = false
+  detachScrollListener()
+  setTimeout(() => attachScrollListener(), 300)
+}
+
+function onResize() {
+  detachScrollListener()
+  attachScrollListener()
+}
+
+onMounted(() => {
+  attachScrollListener()
   window.addEventListener('vitepress-route-changed', onRouteChanged)
+  window.addEventListener('popstate', onRouteChanged)
+  window.addEventListener('resize', onResize)
+})
+
+onUnmounted(() => {
+  detachScrollListener()
+  window.removeEventListener('vitepress-route-changed', onRouteChanged)
+  window.removeEventListener('popstate', onRouteChanged)
+  window.removeEventListener('resize', onResize)
 })
 </script>
 

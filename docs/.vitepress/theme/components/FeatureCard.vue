@@ -1,9 +1,12 @@
 <template>
   <a class="feature-card-link" :href="link">
     <div
+      ref="cardRef"
       class="feature-card"
+      :style="tiltStyle"
       @mouseenter="hovered = true"
-      @mouseleave="hovered = false"
+      @mouseleave="hovered = false; resetTilt()"
+      @mousemove="onTilt"
     >
       <!-- Hover shimmer sweep -->
       <div class="shimmer-overlay" v-if="hovered" />
@@ -51,6 +54,29 @@ const props = defineProps<{
 }>()
 
 const hovered = ref(false)
+const cardRef = ref<HTMLElement | null>(null)
+const tiltX = ref(0)
+const tiltY = ref(0)
+
+const tiltStyle = computed(() => ({
+  transform: `perspective(800px) rotateX(${tiltX.value}deg) rotateY(${tiltY.value}deg) ${hovered.value ? 'translateY(-8px) scale(1.02)' : ''}`,
+}))
+
+function onTilt(e: MouseEvent) {
+  if (!cardRef.value) return
+  const rect = cardRef.value.getBoundingClientRect()
+  const centerX = rect.left + rect.width / 2
+  const centerY = rect.top + rect.height / 2
+  const mouseX = e.clientX - centerX
+  const mouseY = e.clientY - centerY
+  tiltX.value = -(mouseY / (rect.height / 2)) * 6
+  tiltY.value = (mouseX / (rect.width / 2)) * 6
+}
+
+function resetTilt() {
+  tiltX.value = 0
+  tiltY.value = 0
+}
 
 const PARTICLE_COLORS = ['#E8713A', '#F09060', '#FCC8A8', '#FFD700', '#FF6B6B', '#4ECDC4']
 
@@ -85,14 +111,14 @@ const particles = computed(() => {
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
   overflow: hidden;
-  transition: transform 0.35s cubic-bezier(.4,0,.2,1),
-              box-shadow 0.35s cubic-bezier(.4,0,.2,1),
-              border-color 0.35s ease;
+  transition: box-shadow 0.35s cubic-bezier(.4,0,.2,1),
+              border-color 0.35s ease,
+              transform 0.3s ease;
+  transform-style: preserve-3d;
   cursor: pointer;
 }
 
 .feature-card:hover {
-  transform: translateY(-8px) scale(1.02);
   box-shadow:
     0 16px 40px rgba(232, 113, 58, 0.18),
     0 4px 12px rgba(0, 0, 0, 0.06),
@@ -102,7 +128,7 @@ const particles = computed(() => {
 
 @media (max-width: 959px) {
   .feature-card:hover {
-    transform: translateY(-4px); /* 手机端去掉 scale，防止溢出 */
+    box-shadow: 0 8px 20px rgba(232, 113, 58, 0.12);
   }
 }
 

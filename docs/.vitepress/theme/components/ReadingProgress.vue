@@ -66,21 +66,23 @@ function onRouteChanged() {
   }, 300)
 }
 
+function onResize() {
+  detachScrollListener()
+  attachScrollListener()
+}
+
 onMounted(() => {
   attachScrollListener()
   window.addEventListener('vitepress-route-changed', onRouteChanged)
   window.addEventListener('popstate', onRouteChanged)
-  // Also handle resize — container may switch between window and .content
-  window.addEventListener('resize', () => {
-    detachScrollListener()
-    attachScrollListener()
-  })
+  window.addEventListener('resize', onResize)
 })
 
 onUnmounted(() => {
   detachScrollListener()
   window.removeEventListener('vitepress-route-changed', onRouteChanged)
   window.removeEventListener('popstate', onRouteChanged)
+  window.removeEventListener('resize', onResize)
 })
 </script>
 
