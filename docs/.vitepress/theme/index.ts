@@ -56,18 +56,24 @@ export default {
     // Native anchor navigation scrolls the document, not nested scrollable containers.
     if (typeof window !== 'undefined') {
       // Scroll to a heading within the independent .content scroll container
-      function scrollToHeadingInContent(id: string) {
-        const heading = document.getElementById(id)
+      function scrollToHeadingInContent(id: string): boolean {
+        // Try raw ID first (Chinese headings), then decoded form
+        let heading = document.getElementById(id)
+        if (!heading) {
+          try { heading = document.getElementById(decodeURIComponent(id)) } catch {}
+        }
         if (!heading) return false
 
-        // Desktop with sidebar: .content is the scrollable container
-        const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
-        if (!contentEl || window.innerWidth < 960) return false
+        // Find the .content scroll container — works with or without sidebar
+        const contentEl = document.querySelector('.VPDoc .content')
+        if (!contentEl) return false
+
+        // Only handle independent scroll when content has overflow-y:auto
+        const style = getComputedStyle(contentEl)
+        if (style.overflowY !== 'auto') return false
 
         const containerRect = contentEl.getBoundingClientRect()
         const headingRect = heading.getBoundingClientRect()
-
-        // If heading rect is essentially zero, it might not be rendered yet
         if (headingRect.height === 0 && headingRect.width === 0) return false
 
         const offset = headingRect.top - containerRect.top + contentEl.scrollTop - 32
@@ -81,43 +87,33 @@ export default {
         const link = target.closest('a[href^="#"]') as HTMLAnchorElement | null
         if (!link) return
 
-        // Only handle links inside the aside/outline area
+        // Only handle links inside the outline area
         const isOutline = link.closest('.VPDocAside') ||
-                          link.closest('.aside-container') ||
-                          link.closest('.VPODocOutlineItem')
+                          link.closest('.VPDocAsideOutline') ||
+                          link.closest('.aside-container')
         if (!isOutline) return
 
         const href = link.getAttribute('href')
         if (!href || !href.startsWith('#')) return
 
-        const id = decodeURIComponent(href.slice(1))
+        const id = href.slice(1) // URL-encoded or raw
+        if (!id) return
 
-        // Check if heading exists in DOM
-        const heading = document.getElementById(id)
-        if (!heading) return
+        // preventDefault stops native window-scroll to anchor,
+        // but DON'T stopPropagation — let VitePress router handle hash update
+        e.preventDefault()
 
-        // If .content scroll container exists (desktop + sidebar), handle it manually
-        const contentEl = document.querySelector('.VPDoc.has-sidebar .content')
-        if (contentEl && window.innerWidth >= 960) {
-          e.preventDefault()
-          e.stopPropagation()
-
-          // Use a small delay to handle CSS animation settling
-          setTimeout(() => scrollToHeadingInContent(id), 50)
-
-          // Update URL hash for back button support
-          if (window.location.hash !== '#' + id) {
-            history.pushState(null, '', '#' + id)
-          }
-        }
-        // Otherwise let VitePress's native handler work (mobile/no-sidebar)
+        // Small delay for any pending renders
+        setTimeout(() => {
+          scrollToHeadingInContent(id)
+        }, 50)
       }, true)
 
       // Handle browser back/forward to restore scroll position within .content
       window.addEventListener('popstate', () => {
         const hash = window.location.hash.slice(1)
         if (hash) {
-          setTimeout(() => scrollToHeadingInContent(decodeURIComponent(hash)), 100)
+          setTimeout(() => scrollToHeadingInContent(hash), 100)
         }
       })
     }
