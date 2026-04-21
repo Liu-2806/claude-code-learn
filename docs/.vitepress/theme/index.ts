@@ -7,12 +7,16 @@ import ReadingProgress from './components/ReadingProgress.vue'
 import BackToTop from './components/BackToTop.vue'
 import ScrollReveal from './components/ScrollReveal.vue'
 import CursorGlow from './components/CursorGlow.vue'
+import TypeWriter from './components/TypeWriter.vue'
+import ParticlesBg from './components/ParticlesBg.vue'
+import ClickRipple from './components/ClickRipple.vue'
 import './style.css'
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ app, router }) {
     app.component('FeatureCard', FeatureCard)
+    app.component('TypeWriter', TypeWriter)
 
     // Dispatch a custom event when VitePress route changes,
     // so overlay components (mounted in a separate app) can react.
@@ -84,6 +88,22 @@ export default {
         e.preventDefault()
       }, true) // use capture phase to intercept before VitePress's handler
     }
+
+    // Navbar scroll glass effect: add .scrolled class when user scrolls
+    if (typeof window !== 'undefined') {
+      const updateNavScroll = () => {
+        const nav = document.querySelector('.VPNav')
+        if (!nav) return
+        const scrollY = window.scrollY || document.documentElement.scrollTop
+        if (scrollY > 10) {
+          nav.classList.add('scrolled')
+        } else {
+          nav.classList.remove('scrolled')
+        }
+      }
+      window.addEventListener('scroll', updateNavScroll, { passive: true })
+      updateNavScroll()
+    }
   }
 } satisfies Theme
 
@@ -99,14 +119,18 @@ if (typeof window !== 'undefined') {
 
     const overlayApp = createApp({
       template: `
+        <ParticlesBg />
         <CursorGlow />
+        <ClickRipple />
         <FireworksButton />
         <ReadingProgress />
         <BackToTop />
         <ScrollReveal />
       `
     })
+    overlayApp.component('ParticlesBg', ParticlesBg)
     overlayApp.component('CursorGlow', CursorGlow)
+    overlayApp.component('ClickRipple', ClickRipple)
     overlayApp.component('FireworksButton', FireworksButton)
     overlayApp.component('ReadingProgress', ReadingProgress)
     overlayApp.component('BackToTop', BackToTop)

@@ -60,10 +60,20 @@ html, body {
 }
 
 /* ── 全局页面过渡 ── */
-/* Only animate the inner content container, never VPContent itself,
-   to avoid affecting nav bar layout or causing content shifts. */
+/* Smooth content fade with slight upward movement */
 .vp-doc .main {
-  animation: page-fade-in 0.35s ease-out;
+  animation: page-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes page-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes page-fade-in {
@@ -310,6 +320,25 @@ html, body {
 
 /* Navbar sizing — consolidated single declaration */
 
+.VPNav {
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 滚动时导航栏毛玻璃效果 */
+.VPNav.scrolled,
+.nav-glass .VPNav {
+  background-color: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow: 0 1px 12px rgba(232, 113, 58, 0.08), 0 0 0 1px rgba(232, 113, 58, 0.06);
+}
+
+.dark .VPNav.scrolled,
+.dark .nav-glass .VPNav {
+  background-color: rgba(30, 30, 35, 0.78) !important;
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(232, 113, 58, 0.08);
+}
+
 .VPNav,
 .VPNav .VPNavBar,
 .VPNav .VPNavBar .container {
@@ -463,6 +492,33 @@ html, body {
   color: var(--vp-c-brand-1);
 }
 
+/* 侧边栏项弹簧入场动画 */
+.VPSidebar .VPSidebarItem {
+  animation: sidebar-spring-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.VPSidebar .VPSidebarItem:nth-child(1) { animation-delay: 0.05s; }
+.VPSidebar .VPSidebarItem:nth-child(2) { animation-delay: 0.1s; }
+.VPSidebar .VPSidebarItem:nth-child(3) { animation-delay: 0.15s; }
+.VPSidebar .VPSidebarItem:nth-child(4) { animation-delay: 0.2s; }
+.VPSidebar .VPSidebarItem:nth-child(5) { animation-delay: 0.25s; }
+.VPSidebar .VPSidebarItem:nth-child(6) { animation-delay: 0.3s; }
+.VPSidebar .VPSidebarItem:nth-child(7) { animation-delay: 0.35s; }
+.VPSidebar .VPSidebarItem:nth-child(8) { animation-delay: 0.4s; }
+.VPSidebar .VPSidebarItem:nth-child(9) { animation-delay: 0.45s; }
+.VPSidebar .VPSidebarItem:nth-child(10) { animation-delay: 0.5s; }
+
+@keyframes sidebar-spring-in {
+  from {
+    opacity: 0;
+    transform: translateX(-16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 /* ── 内容区域排版 ── */
 /* 中文行高与间距优化 */
 .vp-doc p {
@@ -519,10 +575,12 @@ html, body {
   background: var(--vp-c-brand-1);
   transition: width 0.3s ease;
   border-radius: 1px;
+  box-shadow: 0 0 8px rgba(232, 113, 58, 0.6);
 }
 
 .vp-doc h3:hover::after {
   width: 100%;
+  box-shadow: 0 0 12px rgba(232, 113, 58, 0.8);
 }
 
 /* 列表优化 */
@@ -535,12 +593,18 @@ html, body {
   margin-bottom: 0.4em;
 }
 
-/* 表格优化 - 行 hover 品牌色背景 */
+/* 表格优化 - 行 hover 品牌色背景 + 入场动画 */
 .vp-doc table {
   font-size: 0.9em;
   line-height: 1.6;
   border-radius: 8px;
   overflow: hidden;
+  animation: table-fade-in 0.5s ease-out both;
+}
+
+@keyframes table-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .vp-doc th {
@@ -557,7 +621,22 @@ html, body {
   background-color: rgba(232, 113, 58, 0.06);
 }
 
-/* 自定义容器样式 - 左侧渐变装饰线 */
+/* 自定义容器样式 - 左侧渐变装饰线 + 弹跳入场 */
+.vp-doc .custom-block {
+  animation: container-bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes container-bounce-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .vp-doc .custom-block.tip {
   border-color: var(--vp-c-brand-1);
   position: relative;
@@ -624,6 +703,48 @@ html, body {
   position: relative;
   overflow: hidden;
   padding-top: 28px;
+  animation: codeblock-slide-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes codeblock-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 代码块扫描线动画 */
+.vp-doc div[class*='language-']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--vp-c-brand-1), transparent);
+  animation: code-scan-line 3s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes code-scan-line {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+/* 代码行高亮脉冲 */
+.vp-doc div[class*='language-'] .highlighted {
+  position: relative;
+  animation: line-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes line-glow-pulse {
+  0%, 100% { background-color: rgba(232, 113, 58, 0.08); }
+  50% { background-color: rgba(232, 113, 58, 0.15); }
 }
 
 /* 语言标签圆角徽章 */
@@ -656,15 +777,15 @@ html, body {
   transform: scale(0.9);
 }
 
-/* ── Feature 卡片 ── */
+/* ── Feature 卡片磁吸悬浮 ── */
 .VPFeature .item {
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, border-color 0.25s ease;
   border: 1px solid transparent;
 }
 
 .VPFeature .item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 28px rgba(232, 113, 58, 0.12);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 36px rgba(232, 113, 58, 0.15), 0 0 0 1px rgba(232, 113, 58, 0.2);
   border-color: rgba(232, 113, 58, 0.3);
 }
 
