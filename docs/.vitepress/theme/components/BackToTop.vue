@@ -109,11 +109,11 @@ onUnmounted(() => {
   justify-content: center;
   z-index: 9997;
   box-shadow: 0 4px 16px rgba(232, 113, 58, 0.35);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, opacity 0.25s ease;
 }
 
 .back-to-top-btn:hover {
-  transform: scale(1.15);
+  transform: scale(1.15) rotate(360deg);
   box-shadow: 0 6px 24px rgba(232, 113, 58, 0.5);
 }
 
